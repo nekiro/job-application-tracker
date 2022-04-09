@@ -1,0 +1,36 @@
+{
+  "scripts": {
+    "test": "jest",
+    "build": "rimraf dist && babel src --out-dir dist",
+    "start": "node dist/server.js",
+    "start:dev": "nodemon --watch src/ --exec \"npm run build && npx babel-node src/server.js\""
+  },
+  "name": "v1",
+  "version": "1.0.0",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "mongodb": "^4.5.0",
+    "mongoose": "^6.2.10"
+  },
+  "keywords": [],
+  "author": "Nekiro",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@babel/cli": "^7.17.6",
+    "@babel/core": "^7.17.9",
+    "@babel/node": "^7.16.8",
+    "@babel/plugin-transform-runtime": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/runtime": "^7.17.9",
+    "@types/jest": "^27.4.1",
+    "babel-jest": "^27.5.1",
+    "babel-polyfill": "^6.26.0",
+    "jest": "^27.5.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.15",
+    "rimraf": "^3.0.2",
+    "supertest": "^6.2.2"
+  }
+}
