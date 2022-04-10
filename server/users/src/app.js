@@ -1,6 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import 'dotenv/config';
+import { createConnection } from './database';
+
+// connect to mongodb
+createConnection();
 
 const app = express();
 
@@ -9,10 +14,13 @@ app.use(morgan('tiny'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// routes
-import loginRouter from './routes/login';
+// we don't need to tell our framework
+app.disable('x-powered-by');
 
-app.use('/login', loginRouter);
+// routes
+import usersRouter from './routes/users';
+
+app.use('/users', usersRouter);
 
 // error handler
 app.use((req, res, next) => {
