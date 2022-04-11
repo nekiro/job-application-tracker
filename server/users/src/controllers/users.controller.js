@@ -1,5 +1,4 @@
 import User from '../models/user';
-import { encrypt, compareHash } from '../utils/crypt';
 import { generateToken } from '../utils/authentication';
 
 const refreshToken = async (req, res) => {
@@ -13,14 +12,11 @@ const refreshToken = async (req, res) => {
     return res.status(404).send();
   }
 
-  const success = await compareHash(password, user.password);
-  if (!success) {
+  if (!(await user.validatePassword(password))) {
     return res.status(403).send();
   }
 
-  user.token = generateToken(user);
-
-  res.send(user);
+  res.send(generateToken(user));
 };
 
 const createUser = async (req, res) => {
@@ -33,18 +29,14 @@ const createUser = async (req, res) => {
     return res.status(409).send();
   }
 
-  console.log(password);
-
   // create
   user = await User.create({
     firstName,
     lastName,
     email,
-    password: await encrypt(password),
+    password,
     role,
   });
-
-  user.token = generateToken(user);
 
   res.send(user);
 };

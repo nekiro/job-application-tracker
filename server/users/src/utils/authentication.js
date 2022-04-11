@@ -1,14 +1,20 @@
 import Jwt from 'jsonwebtoken';
 
+//todo: use issuer and audience in token verification
+
 export const generateToken = (user) => {
   try {
-    return Jwt.sign(
-      { user_id: user._id, email: user.email },
-      process.env.TOKEN_SECRET,
+    const exp =
+      Math.floor(Date.now() / 1000) + Number(process.env.TOKEN_LIFETIME);
+    const token = Jwt.sign(
       {
-        expiresIn: '2h',
-      }
+        data: { id: user._id, email: user.email, role: user.role },
+        exp,
+      },
+      process.env.TOKEN_SECRET
     );
+
+    return { token, expiresAt: exp };
   } catch (err) {
     console.log(err);
     return null;

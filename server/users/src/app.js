@@ -2,10 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import 'dotenv/config';
-import { createConnection } from './database';
-
-// connect to mongodb
-createConnection();
 
 const app = express();
 

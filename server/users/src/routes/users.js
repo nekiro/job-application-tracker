@@ -9,11 +9,11 @@ const router = express.Router();
 router.use(validateRequest);
 
 // protected
-router.post('/refreshToken', authenticateToken, controller.refreshToken);
 router.delete('/delete', authenticateToken, controller.deleteUser);
 router.get('/:id', authenticateToken, controller.getUser);
 
 //unprotected
+router.post('/refreshToken', controller.refreshToken);
 router.post('/create', controller.createUser);
 
 export default router;
