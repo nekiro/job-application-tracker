@@ -1,4 +1,5 @@
 import getSchema from '../schemas';
+import formatError from '../utils/error';
 
 const pathToSchema = new Map([
   ['/users/delete', 'deleteSchema'],
@@ -27,7 +28,12 @@ const validateRequest = async (req, res, next) => {
   );
 
   if (error) {
-    res.status(400).send({ error: error.details.map((e) => e.message) });
+    res.status(400).send(
+      formatError(
+        error.details.map((e) => e.message),
+        400
+      )
+    );
   } else {
     req.body = value.body;
     req.params = value.params ?? {};

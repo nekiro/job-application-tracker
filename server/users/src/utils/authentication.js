@@ -11,7 +11,7 @@ export const generateToken = (user) => {
         data: { id: user._id, email: user.email, role: user.role },
         exp,
       },
-      process.env.TOKEN_SECRET
+      process.env.TOKEN_SECRET + user.tokenSecret
     );
 
     return { token, expiresAt: exp };

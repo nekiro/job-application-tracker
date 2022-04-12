@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { Role } from '../middlewares/role';
 
 const registerSchema = Joi.object({
   body: Joi.object({
@@ -7,7 +8,9 @@ const registerSchema = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().min(5).required(),
     confirmPassword: Joi.string().valid(Joi.ref('password')).required(),
-    role: Joi.string().valid('Admin', 'User').required(),
+    role: Joi.number()
+      .valid(...Object.values(Role))
+      .default(Role.USER),
   }),
 });
 

@@ -1,11 +1,12 @@
-import jwt, {
+import Jwt, {
   TokenExpiredError,
   JsonWebTokenError,
   NotBeforeError,
 } from 'jsonwebtoken';
+import User from '../models/user';
 import formatError from '../utils/error';
 
-const authenticateToken = (req, res, next) => {
+export const authenticateToken = async (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
   if (!token) {
@@ -13,7 +14,16 @@ const authenticateToken = (req, res, next) => {
   }
 
   try {
-    req.user = jwt.verify(token, process.env.TOKEN_SECRET);
+    const decodedPayload = Jwt.decode(token);
+
+    const user = await User.findById(decodedPayload.data.id);
+    if (!user) {
+      throw new Error();
+    }
+
+    Jwt.verify(token, process.env.TOKEN_SECRET + user.tokenSecret);
+
+    req.user = user;
   } catch (err) {
     console.log(err);
     let formattedError;
@@ -25,10 +35,14 @@ const authenticateToken = (req, res, next) => {
       formattedError = formatError(`Token activates at ${err.date}`, 401);
     }
 
-    return res.status(500).send(formatError ?? null);
+    if (formattedError) {
+      return res.status(401).send(formattedError);
+    } else {
+      return res.status(500).send();
+    }
   }
 
-  return next();
+  next();
 };
 
 export default authenticateToken;

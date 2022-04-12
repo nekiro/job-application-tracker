@@ -1,7 +1,8 @@
 import express from 'express';
 import controller from '../controllers/users.controller';
 import validateRequest from '../middlewares/validation';
-import authenticateToken from '../middlewares/authentication';
+import { authenticateToken } from '../middlewares/authentication';
+import { Role, hasRole } from '../middlewares/role';
 
 const router = express.Router();
 
@@ -9,7 +10,12 @@ const router = express.Router();
 router.use(validateRequest);
 
 // protected
-router.delete('/delete', authenticateToken, controller.deleteUser);
+router.delete(
+  '/delete',
+  authenticateToken,
+  hasRole(Role.ADMIN),
+  controller.deleteUser
+);
 router.get('/:id', authenticateToken, controller.getUser);
 
 //unprotected
