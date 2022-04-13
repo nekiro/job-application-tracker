@@ -19,7 +19,7 @@ import usersRouter from './routes/users';
 app.use('/users', usersRouter);
 
 // error handler
-app.use((req, res, next) => {
+app.use((req, res, _next) => {
   res.status(404).send();
 });
 

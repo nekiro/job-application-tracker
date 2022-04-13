@@ -1,3 +1,5 @@
+import formatError from '../utils/error';
+
 export const Role = Object.freeze({
   USER: 1,
   ADMIN: 2,

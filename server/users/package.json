@@ -3,7 +3,9 @@
     "test": "jest",
     "build": "rimraf dist && babel src --out-dir dist",
     "start": "node dist/server.js",
-    "start:dev": "nodemon --watch src/ --exec \"npm run build && npx babel-node src/server.js\""
+    "start:dev": "nodemon --watch src/ --exec \"npm run build && npx babel-node src/server.js\"",
+    "lint": "eslint .",
+    "prettify": "prettier --write ."
   },
   "name": "users_microservice",
   "version": "1.0.0",
@@ -30,11 +32,17 @@
     "@babel/runtime": "^7.17.9",
     "@types/jest": "^27.4.1",
     "babel-jest": "^27.5.1",
+    "babel-plugin-transform-remove-console": "^6.9.4",
     "babel-polyfill": "^6.26.0",
+    "eslint": "^8.13.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.26.0",
+    "eslint-plugin-jest": "^26.1.4",
     "jest": "^27.5.1",
     "mongodb-memory-server": "^8.4.2",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.15",
+    "prettier": "^2.6.2",
     "rimraf": "^3.0.2",
     "supertest": "^6.2.2"
   }

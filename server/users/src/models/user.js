@@ -24,7 +24,7 @@ UserSchema.pre('validate', async function (next) {
 
 // never show password
 UserSchema.set('toJSON', {
-  transform: (doc, ret, options) => {
+  transform: (doc, ret, _options) => {
     delete ret.password;
     delete ret.tokenSecret;
     delete ret.__v;

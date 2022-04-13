@@ -1,4 +1,4 @@
 module.exports = {
   presets: [['@babel/preset-env', { targets: { node: 'current' } }]],
-  plugins: [['@babel/transform-runtime']],
+  plugins: [['@babel/transform-runtime'], ['transform-remove-console']],
 };
