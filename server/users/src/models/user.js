@@ -24,7 +24,7 @@ UserSchema.pre('validate', async function (next) {
 
 // never show password
 UserSchema.set('toJSON', {
-  transform: (doc, ret, _options) => {
+  transform: (_doc, ret, _options) => {
     delete ret.password;
     delete ret.tokenSecret;
     delete ret.__v;
@@ -38,11 +38,6 @@ UserSchema.method('validatePassword', async function (plain) {
 
 UserSchema.method('generateTokenSecret', async function () {
   return await generateSalt(6);
-});
-
-UserSchema.method('resetTokenSecret', async function () {
-  this.tokenSecret = await this.generateTokenSecret();
-  await this.save();
 });
 
 export default mongoose.model('User', UserSchema);

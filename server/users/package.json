@@ -2,6 +2,7 @@
   "scripts": {
     "test": "jest",
     "build": "rimraf dist && babel src --out-dir dist",
+    "build:prod": "rimraf dist && babel --plugins transform-remove-console src --out-dir dist ",
     "start": "node dist/server.js",
     "start:dev": "nodemon --watch src/ --exec \"npm run build && npx babel-node src/server.js\"",
     "lint": "eslint .",

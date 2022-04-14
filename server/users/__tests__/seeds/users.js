@@ -13,7 +13,7 @@ const users = [
 
 const seedUsers = async () => {
   try {
-    await User.deleteMany({});
+    await User.deleteMany();
     await User.insertMany(users);
   } catch (err) {
     console.log(err);

@@ -1,4 +1,4 @@
-import formatError from '../utils/error';
+import { InvalidRoleError } from './errorHandler';
 
 export const Role = Object.freeze({
   USER: 1,
@@ -6,11 +6,11 @@ export const Role = Object.freeze({
 });
 
 export const hasRole = (role) => {
-  return (req, res, next) => {
+  return (req, _res, next) => {
     if (!req.user || req.user.role !== role) {
-      return res.status(401).send(formatError('Insufficient privileges', 401));
+      next(new InvalidRoleError('Invalid role'));
+    } else {
+      next();
     }
-
-    next();
   };
 };

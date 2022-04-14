@@ -1,39 +1,25 @@
-import getSchema from '../schemas';
-import formatError from '../utils/error';
+import { ValidationError } from './errorHandler';
+import schemas from '../schemas';
 
-const pathToSchema = new Map([
-  ['/users/delete', 'deleteSchema'],
-  ['/users/create', 'createSchema'],
-  ['/users/refreshToken', 'refreshTokenSchema'],
-]);
+const options = {
+  abortEarly: false,
+  allowUnknown: true,
+  stripUnknown: true,
+};
 
-const validateRequest = async (req, res, next) => {
-  const name = pathToSchema.get(req.originalUrl);
-  if (!name) {
-    return next();
-  }
-
-  const schema = await getSchema(name);
+const validateRequest = async (req, _res, next) => {
+  const schema = schemas[req.originalUrl];
   if (!schema) {
     return next();
   }
 
   const { error, value } = schema.validate(
-    { body: req.body },
-    {
-      abortEarly: false,
-      allowUnknown: true,
-      stripUnknown: true,
-    }
+    { body: req.body, params: req.params, query: req.query },
+    options
   );
 
   if (error) {
-    res.status(400).send(
-      formatError(
-        error.details.map((e) => e.message),
-        400
-      )
-    );
+    next(new ValidationError(error));
   } else {
     req.body = value.body;
     req.params = value.params ?? {};
