@@ -1,6 +1,6 @@
 import express from 'express';
 import authController from '../controllers/auth.controller';
-import { authenticateToken } from '../middlewares/authentication';
+import authenticateToken from '../middlewares/authentication';
 
 const router = express.Router();
 

@@ -46,12 +46,16 @@ export default {
   },
 
   // protected
-  logout: async (req, res) => {
-    const { user } = req;
+  logout: async (req, res, next) => {
+    try {
+      const { user } = req;
 
-    // revoke token
-    user.tokenSecret = await user.generateTokenSecret();
-    user.save();
-    res.status(200).send({});
+      // revoke token
+      user.tokenSecret = await user.generateTokenSecret();
+      user.save();
+      res.status(200).send({});
+    } catch (err) {
+      next(err);
+    }
   },
 };
