@@ -1,10 +1,10 @@
 {
   "scripts": {
     "test": "jest",
-    "build": "rimraf dist && babel src --out-dir dist --copy-files",
-    "build:prod": "rimraf dist && babel --plugins transform-remove-console src --out-dir dist --copy-files",
+    "build": "rimraf dist && babel api --out-dir dist --copy-files",
+    "build:prod": "rimraf dist && babel --plugins transform-remove-console api --out-dir dist --copy-files",
     "start": "NODE_ENV=production node dist/server.js",
-    "start:dev": "nodemon --watch src/ --exec npx babel-node src/server.js",
+    "start:dev": "nodemon --watch api/ --exec npx babel-node api/server.js",
     "lint": "eslint .",
     "prettify": "prettier --write ."
   },
