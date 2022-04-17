@@ -34,7 +34,7 @@ const errorHandler = (err, _req, res, _next) => {
       error.error = {};
 
       err.what.forEach((e) => {
-        error.error[e.context.key] = e.message.replaceAll('"', '');
+        error.error[e.context.key] = e.message.replace(/"/g, '');
       });
 
       error.errorCode = 400;
