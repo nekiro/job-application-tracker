@@ -19,6 +19,13 @@ export class InvalidRoleError extends Error {
   }
 }
 
+export class AuthError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'AuthError';
+  }
+}
+
 const errorHandler = (err, _req, res, _next) => {
   if (res.headersSent) {
     return _next(err);
@@ -34,7 +41,7 @@ const errorHandler = (err, _req, res, _next) => {
       error.error = {};
 
       err.what.forEach((e) => {
-        error.error[e.context.key] = e.message.replace(/"/g, '');
+        error.error[e.context.key] = e.message.split('"').join('');
       });
 
       error.errorCode = 400;
@@ -56,6 +63,11 @@ const errorHandler = (err, _req, res, _next) => {
       break;
 
     case InvalidRoleError:
+      error.error = err.message;
+      error.errorCode = 401;
+      break;
+
+    case AuthError:
       error.error = err.message;
       error.errorCode = 401;
       break;

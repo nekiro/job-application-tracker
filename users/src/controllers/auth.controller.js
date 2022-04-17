@@ -1,11 +1,10 @@
 import User from '../models/user';
 import { generateToken } from '../utils/authentication';
-
-// todo: use error handler middleware in this controller too
+import { AuthError } from '../middlewares/errorHandler';
 
 export default {
   // unprotected
-  login: async (req, res) => {
+  login: async (req, res, next) => {
     const { email, password } = req.body;
 
     try {
@@ -13,29 +12,23 @@ export default {
         email,
       });
 
-      if (!user) {
-        return res.status(404).send({});
+      if (!user || !(await user.validatePassword(password))) {
+        throw new AuthError("Email or password doesn't match");
       }
 
-      if (!(await user.validatePassword(password))) {
-        return res.status(403).send({});
-      }
-
-      res.send(generateToken(user));
+      res.send({ ...user.toJSON(), ...generateToken(user) });
     } catch (err) {
-      return res.status(500).send({});
+      next(err);
     }
   },
 
-  register: async (req, res) => {
-    await User.deleteMany();
-
+  register: async (req, res, next) => {
     const { firstName, lastName, email, password, role } = req.body;
 
     try {
       let user = await User.findOne({ email });
       if (user) {
-        return res.status(409).send({});
+        throw new AuthError('Email already used');
       }
 
       user = await User.create({
@@ -48,8 +41,7 @@ export default {
 
       res.send(user);
     } catch (err) {
-      console.log(err);
-      return res.status(500).send({});
+      next(err);
     }
   },
 
