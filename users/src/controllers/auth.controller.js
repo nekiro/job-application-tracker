@@ -5,9 +5,9 @@ import { AuthError } from '../middlewares/errorHandler';
 export default {
   // unprotected
   login: async (req, res, next) => {
-    const { email, password } = req.body;
-
     try {
+      const { email, password } = req.body;
+
       const user = await User.findOne({
         email,
       });
@@ -23,9 +23,9 @@ export default {
   },
 
   register: async (req, res, next) => {
-    const { firstName, lastName, email, password, role } = req.body;
-
     try {
+      const { firstName, lastName, email, password, role } = req.body;
+
       let user = await User.findOne({ email });
       if (user) {
         throw new AuthError('Email already used');
@@ -50,7 +50,7 @@ export default {
     const { user } = req;
 
     // revoke token
-    user.secretToken = user.generateTokenSecret();
+    user.tokenSecret = await user.generateTokenSecret();
     user.save();
     res.status(200).send({});
   },
