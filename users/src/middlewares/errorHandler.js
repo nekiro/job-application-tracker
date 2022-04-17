@@ -19,47 +19,54 @@ export class InvalidRoleError extends Error {
   }
 }
 
-const formatError = (message, code) => {
-  return {
-    error: message,
-    errorCode: code,
-  };
-};
-
 const errorHandler = (err, _req, res, _next) => {
   if (res.headersSent) {
     return _next(err);
   }
 
+  const error = {
+    errorType: err.name,
+    errorCode: 500,
+  };
+
   switch (err.constructor) {
     case ValidationError:
-      return res.status(400).send(
-        formatError(
-          err.what.map((e) => e.message),
-          400
-        )
-      );
+      error.error = {};
+
+      err.what.forEach((e) => {
+        error.error[e.context.key] = e.message.replaceAll('"', '');
+      });
+
+      error.errorCode = 400;
+      break;
 
     case TokenExpiredError:
-      return res
-        .status(401)
-        .send(formatError(`Token expired at ${err.expiredAt}`, 401));
+      error.error = `Token expired at ${err.expiredAt}`;
+      error.errorCode = 401;
+      break;
 
     case JsonWebTokenError:
-      return res.status(401).send(formatError(err.message, 401));
+      error.error = err.message;
+      error.errorCode = 401;
+      break;
 
     case NotBeforeError:
-      return res
-        .status(401)
-        .send(formatError(`Token activates at ${err.date}`, 401));
+      error.error = `Token activates at ${err.date}`;
+      error.errorCode = 401;
+      break;
 
     case InvalidRoleError:
-      return res.status(401).send(formatError(err.message, 401));
+      error.error = err.message;
+      error.errorCode = 401;
+      break;
 
     default:
       console.log(err);
-      return res.status(500).send(err);
+      error.error = 'Internal Server Error';
+      break;
   }
+
+  res.status(error.errorCode).send({ ...error, ['errorCode']: undefined });
 };
 
 export default errorHandler;
