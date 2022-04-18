@@ -1,24 +1,26 @@
 import mongoose from 'mongoose';
 
-export const createConnection = async () => {
-  try {
-    mongoose.connect(process.env.DATABASE_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-  } catch (error) {
-    console.log(error);
-  }
+let conn = null;
 
-  mongoose.connection.on('connected', () =>
+export const createConnection = async () => {
+  if (!conn) {
+    try {
+      conn = mongoose.connect(process.env.DATABASE_URL, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+
+    await conn;
+
     console.log(
       `Mongoose default connection opened to ${process.env.DATABASE_URL}`
-    )
-  );
+    );
+  }
 
-  mongoose.connection.on('error', (err) => {
-    console.log(err);
-  });
+  return conn;
 };
 
 export const destroyConnection = async () => {
