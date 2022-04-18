@@ -1,0 +1,23 @@
+service: aws-user-microservice
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: eu-central-1
+
+plugins:
+  - serverless-webpack
+  - serverless-offline
+  - serverless-dotenv-plugin
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
+functions:
+  app:
+    handler: ./src/serverless.handler
+    events:
+      - httpApi: '*'
