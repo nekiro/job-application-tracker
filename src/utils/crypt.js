@@ -1,4 +1,4 @@
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs';
 
 export const generateSalt = async (rounds) => {
   return await bcrypt.genSalt(rounds);
