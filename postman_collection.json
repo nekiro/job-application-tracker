@@ -1,0 +1,211 @@
+{
+	"info": {
+		"_postman_id": "9ff482eb-82c1-46e5-a99f-d4164cad7fdc",
+		"name": "auth/users",
+		"description": "It's important to mention, that this API is not yet done, there is a lot of missing functionality.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"admin@admin.pl\",\r\n    \"password\": \"admin\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Acts like regular login route, generates new JWT token"
+					},
+					"response": []
+				},
+				{
+					"name": "register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"admin\",\r\n    \"lastName\": \"admin\",\r\n    \"email\": \"admin@admin.pl\",\r\n    \"password\": \"admin\",\r\n    \"role\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/auth/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						},
+						"description": "Registers new user and returns it, call login endpoint to login with freshly created user"
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoiNjI1YzBiMmIxM2ZiYTlkMmExMmEwY2Q2IiwiZW1haWwiOiJhZG1pbkBhZG1pbi5wbCIsInJvbGUiOjJ9LCJleHAiOjE2NTAyMDMwMTYsImlhdCI6MTY1MDE5OTQxNn0.fauK4j7IF5s9T9EISBPcm8cqf8GS5Uvlc2DEI2T27Eo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/auth/logout",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"logout"
+							]
+						},
+						"description": "Revokes all active token, call login route to use the api again"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "delete",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"62532dc01c1dbc9008f6b337\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/users/delete",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"delete"
+							]
+						},
+						"description": "Deletes user with given id, admin role is needed to call this endpoint"
+					},
+					"response": []
+				},
+				{
+					"name": "get user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7ImlkIjoiNjI1NWI0Y2M4ZGY5OTdjMjg3MjFiYWQ4IiwiZW1haWwiOiJhZG1pbkBhZG1pbi5wbCIsInJvbGUiOiJBZG1pbiJ9LCJleHAiOjE2NDk3ODg0ODQsImlhdCI6MTY0OTc4NDg4NH0.MxXwm9YfDMdQcbYWDzvcchPWjkzjG241I_Z52cSWVuQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/users/625332a4fdcb3cbe4b1401b7",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"users",
+								"625332a4fdcb3cbe4b1401b7"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "62531d3324cf059b0d5b3c6d",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "https://c62762a6q9.execute-api.eu-central-1.amazonaws.com/",
+			"type": "string"
+		}
+	]
+}
