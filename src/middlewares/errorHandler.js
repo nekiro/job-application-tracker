@@ -26,6 +26,13 @@ export class AuthError extends Error {
   }
 }
 
+export class NotFoundError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'NotFoundError';
+  }
+}
+
 const errorHandler = (err, _req, res, _next) => {
   if (res.headersSent) {
     return _next(err);
@@ -70,6 +77,11 @@ const errorHandler = (err, _req, res, _next) => {
     case AuthError:
       error.error = err.message;
       error.errorCode = 401;
+      break;
+
+    case NotFoundError:
+      error.error = err.message;
+      error.errorCode = 404;
       break;
 
     default:

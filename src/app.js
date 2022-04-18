@@ -4,6 +4,7 @@ import morgan from 'morgan';
 import errorHandler from './middlewares/errorHandler';
 import validateRequest from './middlewares/validation';
 import 'dotenv/config';
+import { NotFoundError } from './middlewares/errorHandler';
 
 import usersRouter from './routes/users';
 import authRouter from './routes/auth';
@@ -29,8 +30,8 @@ app.use('/auth', authRouter);
 app.use(errorHandler);
 
 // unknown routes
-app.use((_req, res, _next) => {
-  res.status(404).send();
-});
+app.use((req, res, next) =>
+  errorHandler(new NotFoundError('Invalid route'), req, res, next)
+);
 
 export default app;
