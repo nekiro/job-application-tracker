@@ -1,5 +1,4 @@
 import { ValidationError } from './errorHandler';
-import schemas from '../schemas';
 
 const options = {
   abortEarly: false,
@@ -7,8 +6,7 @@ const options = {
   stripUnknown: true,
 };
 
-const validateRequest = async (req, _res, next) => {
-  const schema = schemas[req.originalUrl];
+export const validateRequest = (schema) => async (req, _res, next) => {
   if (!schema) {
     return next();
   }
@@ -27,5 +25,3 @@ const validateRequest = async (req, _res, next) => {
     next();
   }
 };
-
-export default validateRequest;

@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 import { encrypt, compareHash, generateSalt } from '../utils/crypt';
 import { Role } from '../middlewares/role';
 
+import { JobSchema as Job } from './job';
+import { CompanySchema as Company } from './company';
+
 const UserSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
@@ -9,6 +12,8 @@ const UserSchema = new mongoose.Schema({
   password: { type: String, required: true },
   tokenSecret: { type: String, required: true, unique: true },
   role: { type: Number, default: Role.USER },
+  jobs: { type: [Job], default: [] },
+  companies: { type: [Company], default: [] },
 });
 
 UserSchema.pre('validate', async function (next) {
@@ -24,10 +29,12 @@ UserSchema.pre('validate', async function (next) {
 
 // never show password
 UserSchema.set('toJSON', {
+  virtuals: true,
   transform: (_doc, ret, _options) => {
     delete ret.password;
     delete ret.tokenSecret;
     delete ret.__v;
+    delete ret._id;
     return ret;
   },
 });
@@ -38,6 +45,10 @@ UserSchema.method('validatePassword', async function (plain) {
 
 UserSchema.method('generateTokenSecret', async function () {
   return await generateSalt(6);
+});
+
+UserSchema.virtual('id').get(function () {
+  return this._id.toHexString();
 });
 
 export default mongoose.model('User', UserSchema);

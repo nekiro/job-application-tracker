@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import errorHandler from './middlewares/errorHandler';
-import validateRequest from './middlewares/validation';
 import 'dotenv/config';
 import { NotFoundError } from './middlewares/errorHandler';
 
@@ -18,9 +17,6 @@ app.use(express.urlencoded({ extended: false }));
 
 // we don't need to tell our framework
 app.disable('x-powered-by');
-
-// schema validator
-app.use(validateRequest);
 
 // routes
 app.use('/users', usersRouter);

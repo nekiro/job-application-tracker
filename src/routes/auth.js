@@ -1,11 +1,18 @@
 import express from 'express';
-import authController from '../controllers/auth.controller';
-import authenticateToken from '../middlewares/authentication';
+import * as handler from '../handlers/auth.handler';
+import * as schemas from '../schemas/auth';
+import { authenticate } from '../middlewares/authentication';
+import { validateRequest } from '../middlewares/validation';
 
 const router = express.Router();
 
-router.post('/login', authController.login);
-router.post('/logout', authenticateToken, authController.logout);
-router.post('/register', authController.register);
+router.post('/sign-in', validateRequest(schemas.signIn), handler.signIn);
+router.post(
+  '/sign-out',
+  validateRequest(schemas.signOut),
+  authenticate(),
+  handler.signOut
+);
+router.post('/sign-up', validateRequest(schemas.signUp), handler.signUp);
 
 export default router;
