@@ -19,9 +19,3 @@ export const signIn = Joi.object({
     password: Joi.string().min(5).required(),
   }),
 });
-
-export const signOut = Joi.object({
-  body: Joi.object({
-    id: Joi.string().required(),
-  }),
-});

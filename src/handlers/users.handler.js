@@ -3,9 +3,9 @@ import User from '../models/user';
 import mongoose from 'mongoose';
 
 export const deleteUser = async (req, res, next) => {
-  const { id } = req.body;
-
   try {
+    const { id } = req.params;
+
     const result = await User.deleteOne({ _id: id });
     if (result.deletedCount === 0) {
       throw new NotFoundError('User not found');
@@ -59,7 +59,7 @@ export const addJob = async (req, res, next) => {
 
     // create job offer
     const jobOffer = {
-      _id: new mongoose.Types.ObjectId(),
+      id: new mongoose.Types.ObjectId(),
       name,
       level,
       status,
@@ -107,7 +107,7 @@ export const addCompany = async (req, res, next) => {
     const { name, website, size } = req.body;
 
     const company = {
-      _id: new mongoose.Types.ObjectId(),
+      id: new mongoose.Types.ObjectId(),
       name,
       website,
       size,

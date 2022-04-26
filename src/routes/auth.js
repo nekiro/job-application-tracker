@@ -7,12 +7,7 @@ import { validateRequest } from '../middlewares/validation';
 const router = express.Router();
 
 router.post('/sign-in', validateRequest(schemas.signIn), handler.signIn);
-router.post(
-  '/sign-out',
-  validateRequest(schemas.signOut),
-  authenticate(),
-  handler.signOut
-);
+router.post('/sign-out', authenticate(), handler.signOut);
 router.post('/sign-up', validateRequest(schemas.signUp), handler.signUp);
 
 export default router;
