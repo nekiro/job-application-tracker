@@ -3,6 +3,8 @@ import {
   JsonWebTokenError,
   NotBeforeError,
 } from 'jsonwebtoken';
+import { PrismaClientKnownRequestError } from '@prisma/client';
+import { excludeKeys } from '../utils';
 
 export class ValidationError extends Error {
   constructor(what) {
@@ -30,6 +32,13 @@ export class NotFoundError extends Error {
   constructor(message) {
     super(message);
     this.name = 'NotFoundError';
+  }
+}
+
+export class ResourceExistsError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = 'ResourceExistsError';
   }
 }
 
@@ -84,13 +93,27 @@ const errorHandler = (err, _req, res, _next) => {
       error.errorCode = 404;
       break;
 
+    case ResourceExistsError:
+      error.error = err.message;
+      error.errorCode = 409;
+      break;
+
+    case PrismaClientKnownRequestError:
+      switch (err.code) {
+        default:
+          error.error = err.message;
+          error.errorCode = 500;
+          break;
+      }
+      break;
+
     default:
       console.log(err);
       error.error = 'Internal Server Error';
       break;
   }
 
-  res.status(error.errorCode).send({ ...error, ['errorCode']: undefined });
+  res.status(error.errorCode).send(excludeKeys(error, ['errorCode']));
 };
 
 export default errorHandler;

@@ -1,29 +1,29 @@
 import supertest from 'supertest';
-import app from '../src/app';
-import { connect, disconnect } from './mocks/db';
-import seedUsers from './seeds/users';
-import mockToken from './mocks/token';
+import app from '../../src/app';
+import seedUsers from '../seeds/users';
+import { createDatabase, destroyDatabase } from '../mocks/db';
+import mockToken from '../mocks/token';
 
 const request = supertest(app);
 
-describe('Test Logout Endpoint', () => {
+describe('API Sign-out - revoke token successfully', () => {
   let token;
 
-  beforeAll(async () => {
-    await connect();
+  beforeEach(async () => {
+    await createDatabase();
     await seedUsers();
 
     // generate mock token
     ({ token } = await mockToken());
   });
 
-  afterAll(async () => {
-    await disconnect();
+  afterEach(async () => {
+    await destroyDatabase();
   });
 
   describe('given no token', () => {
     test('should respond with an error', async () => {
-      const response = await request.post('/auth/logout').send();
+      const response = await request.post('/auth/sign-out').send();
 
       expect(response.statusCode).toBe(401);
       expect(response.headers['content-type']).toEqual(
@@ -36,7 +36,7 @@ describe('Test Logout Endpoint', () => {
   describe('given valid token', () => {
     test('should respond with code 200', async () => {
       const response = await request
-        .post('/auth/logout')
+        .post('/auth/sign-out')
         .set('Authorization', `Bearer ${token}`)
         .send();
 

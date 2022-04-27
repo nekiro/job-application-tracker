@@ -1,20 +1,25 @@
-import User from '../models/user';
 import { generateToken } from '../utils/authentication';
-import { AuthError } from '../middlewares/errorHandler';
+import { AuthError, ResourceExistsError } from '../middlewares/errorHandler';
+import { generateSalt, encrypt } from '../utils/crypt';
+import prisma from '../database';
+import { excludeKeys, formatSuccess } from '../utils';
+import { userExcludedKeys } from '../schemas/auth';
 
 export const signIn = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({
-      email,
+    const user = await prisma.User.findFirst({
+      where: { email, password: encrypt(password) },
     });
-
-    if (!user || !(await user.validatePassword(password))) {
+    if (!user) {
       throw new AuthError("Email or password doesn't match");
     }
 
-    res.send({ ...user.toJSON(), ...generateToken(user) });
+    res.send({
+      user: excludeKeys(user, userExcludedKeys),
+      ...generateToken(user),
+    });
   } catch (err) {
     next(err);
   }
@@ -22,22 +27,27 @@ export const signIn = async (req, res, next) => {
 
 export const signUp = async (req, res, next) => {
   try {
+    await prisma.User.deleteMany({});
+
     const { firstName, lastName, email, password, role } = req.body;
 
-    let user = await User.findOne({ email });
+    let user = await prisma.User.findUnique({ where: { email } });
     if (user) {
-      throw new AuthError('Email already used');
+      throw new ResourceExistsError('Email already used');
     }
 
-    user = await User.create({
-      firstName,
-      lastName,
-      email,
-      password,
-      role,
+    user = await prisma.User.create({
+      data: {
+        firstName,
+        lastName,
+        email,
+        password: await encrypt(password),
+        role,
+        tokenSecret: await generateSalt(6),
+      },
     });
 
-    res.send(user);
+    res.send(excludeKeys(user, userExcludedKeys));
   } catch (err) {
     next(err);
   }
@@ -48,9 +58,14 @@ export const signOut = async (req, res, next) => {
     const { user } = req;
 
     // revoke token
-    user.tokenSecret = await user.generateTokenSecret();
-    user.save();
-    res.status(200).send({});
+    await prisma.User.update({
+      where: { id: user.id },
+      data: {
+        tokenSecret: await generateSalt(6),
+      },
+    });
+
+    res.status(200).send(formatSuccess('Logged out succesfully'));
   } catch (err) {
     next(err);
   }

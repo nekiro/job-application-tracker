@@ -1,10 +1,13 @@
 import app from './app';
-import { createConnection } from './database';
+import prisma from './database';
+
+prisma.$connect().then(() => {
+  console.log(
+    `Initialized connection to database at ${process.env.DATABASE_URL}`
+  );
+});
 
 const PORT = process.env.PORT || 3000;
-
-// connect to mongodb
-createConnection();
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}!`);

@@ -1,5 +1,6 @@
 import { Role } from '../../src/middlewares/role';
-import User from '../../src/models/user';
+import { generateSalt } from '../../src/utils/crypt';
+import prisma from '../../src/database';
 
 const users = [
   {
@@ -13,8 +14,11 @@ const users = [
 
 const seedUsers = async () => {
   try {
-    await User.deleteMany();
-    await User.insertMany(users);
+    for (const user of users) {
+      await prisma.User.create({
+        data: { ...user, tokenSecret: await generateSalt(6) },
+      });
+    }
   } catch (err) {
     console.log(err);
   }

@@ -19,3 +19,5 @@ export const signIn = Joi.object({
     password: Joi.string().min(5).required(),
   }),
 });
+
+export const userExcludedKeys = ['password', 'tokenSecret'];

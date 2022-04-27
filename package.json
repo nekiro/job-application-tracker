@@ -1,9 +1,10 @@
 {
   "scripts": {
-    "test": "jest",
+    "test": "prisma migrate reset --force --schema ./test/prisma/schema.prisma && prisma db push --schema ./test/prisma/schema.prisma && jest -i",
     "build": "rimraf build && babel --plugins transform-remove-console src --out-dir build --copy-files",
     "start": "NODE_ENV=production node build/server.js",
-    "serverful:dev": "nodemon --watch src/ --exec npx babel-node src/server.js",
+    "serverful:dev": "npm run preparedb && nodemon --watch src/ --exec npx babel-node src/server.js",
+    "preparedb": "prisma migrate reset --force --schema ./test/prisma/schema.prisma && prisma db push --schema ./test/prisma/schema.prisma",
     "sls:offline": "sls offline start",
     "sls:deploy": "sls deploy",
     "lint": "eslint ."
@@ -11,6 +12,7 @@
   "name": "users_microservice",
   "version": "1.0.0",
   "dependencies": {
+    "@prisma/client": "^3.13.0",
     "babel-plugin-source-map-support": "^2.1.3",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -18,9 +20,8 @@
     "express": "^4.17.3",
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
-    "mongodb": "^4.5.0",
-    "mongoose": "^6.2.10",
     "morgan": "^1.10.0",
+    "mysql": "^2.18.1",
     "serverless-http": "^3.0.1",
     "source-map-support": "^0.5.21"
   },
@@ -45,9 +46,9 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^26.1.4",
     "jest": "^27.5.1",
-    "mongodb-memory-server": "^8.4.2",
     "nodemon": "^2.0.15",
     "prettier": "^2.6.2",
+    "prisma": "^3.13.0",
     "rimraf": "^3.0.2",
     "serverless": "^3.14.0",
     "serverless-dotenv-plugin": "^4.0.0",

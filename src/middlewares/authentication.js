@@ -1,7 +1,8 @@
 import Jwt, { JsonWebTokenError } from 'jsonwebtoken';
-import User from '../models/user';
+// import User from '../models/user';
 import { AuthError } from './errorHandler';
 import { Role } from './role';
+import prisma from '../database';
 
 // options = {
 //   sameUser: boolean,
@@ -36,7 +37,9 @@ export const authenticate =
         throw new JsonWebTokenError('Malformed token data');
       }
 
-      const user = await User.findById(decodedPayload.data.id);
+      const user = await prisma.User.findFirst({
+        where: { id: decodedPayload.data.id },
+      });
       if (!user) {
         throw new JsonWebTokenError('Malformed token data');
       }

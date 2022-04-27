@@ -1,17 +1,19 @@
 import { NotFoundError } from '../middlewares/errorHandler';
-import User from '../models/user';
-import mongoose from 'mongoose';
+import prisma from '../database';
+import { formatSuccess, excludeKeys } from '../utils';
+import { userExcludedKeys } from '../schemas/auth';
 
 export const deleteUser = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const result = await User.deleteOne({ _id: id });
-    if (result.deletedCount === 0) {
+    try {
+      await prisma.User.delete({ where: { id } });
+    } catch (err) {
       throw new NotFoundError('User not found');
     }
 
-    res.send();
+    res.send(formatSuccess('Deleted succesfully'));
   } catch (err) {
     next(err);
   }
@@ -21,12 +23,12 @@ export const getUser = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const user = await User.findById(id);
+    const user = await prisma.User.findUnique({ where: { id } });
     if (!user) {
       throw new NotFoundError('User not found');
     }
 
-    res.send(user);
+    res.send(excludeKeys(user, userExcludedKeys));
   } catch (err) {
     next(err);
   }
@@ -35,39 +37,37 @@ export const getUser = async (req, res, next) => {
 export const addJob = async (req, res, next) => {
   try {
     const { user } = req;
-
     const { name, level, status, company } = req.body;
 
     let companyObj = null;
 
     if (typeof company == 'object') {
       // if company is an object, we have to create and insert it too
-      companyObj = {
-        name: company.name,
-        website: company.website,
-        size: company.size,
-      };
-
-      user.companies.push(companyObj);
+      companyObj = await prisma.Company.create({
+        data: {
+          name: company.name,
+          website: company.website,
+          size: company.size,
+        },
+      });
     } else if (typeof company == 'string') {
       // company is a string (id), so it already exists
-      companyObj = user.companies.find((c) => c.id === company);
+      companyObj = await prisma.Company.findFirst({ where: { id: company } });
       if (!companyObj) {
         throw new NotFoundError('Company not found');
       }
     }
 
     // create job offer
-    const jobOffer = {
-      id: new mongoose.Types.ObjectId(),
-      name,
-      level,
-      status,
-      company: companyObj,
-    };
-
-    user.jobs.push(jobOffer);
-    await user.save();
+    const jobOffer = await prisma.Job.create({
+      data: {
+        name,
+        level,
+        status,
+        companyId: companyObj.id,
+        userId: user.id,
+      },
+    });
 
     res.send(jobOffer);
   } catch (err) {
@@ -77,10 +77,9 @@ export const addJob = async (req, res, next) => {
 
 export const getJob = async (req, res, next) => {
   try {
-    const { user } = req;
     const { jobId } = req.params;
 
-    const job = user.jobs.find((j) => j.id === jobId);
+    const job = await prisma.Job.findUnique({ where: { id: jobId } });
     if (!job) {
       throw new NotFoundError('Job not found');
     }
@@ -95,7 +94,10 @@ export const getJobs = async (req, res, next) => {
   try {
     const { user } = req;
 
-    res.send(user.jobs);
+    // TODO: pagination?
+    const jobs = await prisma.Job.findMany({ where: { userId: user.id } });
+
+    res.send(jobs);
   } catch (err) {
     next(err);
   }
@@ -106,15 +108,14 @@ export const addCompany = async (req, res, next) => {
     const { user } = req;
     const { name, website, size } = req.body;
 
-    const company = {
-      id: new mongoose.Types.ObjectId(),
-      name,
-      website,
-      size,
-    };
-
-    user.companies.push(company);
-    await user.save();
+    const company = await prisma.Company.create({
+      data: {
+        name,
+        website,
+        size,
+        userId: user.id,
+      },
+    });
 
     res.send(company);
   } catch (err) {
@@ -126,7 +127,11 @@ export const getCompanies = async (req, res, next) => {
   try {
     const { user } = req;
 
-    res.send(user.companies);
+    const companies = await prisma.Company.findMany({
+      where: { userId: user.id },
+    });
+
+    res.send(companies);
   } catch (err) {
     next(err);
   }
@@ -137,7 +142,9 @@ export const getCompany = async (req, res, next) => {
     const { user } = req;
     const { companyId } = req.params;
 
-    const company = user.companies.find((c) => c.id === companyId);
+    const company = await prisma.Company.findFirst({
+      where: { userId: user.id, id: companyId },
+    });
     if (!company) {
       throw new NotFoundError('Company not found');
     }

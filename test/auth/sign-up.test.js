@@ -1,23 +1,21 @@
 import supertest from 'supertest';
-import app from '../src/app';
-import { connect, disconnect } from './mocks/db';
-import seedUsers from './seeds/users';
+import app from '../../src/app';
+import { createDatabase, destroyDatabase } from '../mocks/db';
 
 const request = supertest(app);
 
-describe('Test Register Endpoint', () => {
-  beforeAll(async () => {
-    await connect();
-    await seedUsers();
+describe('API Sign-up - create user successfully', () => {
+  beforeEach(async () => {
+    await createDatabase();
   });
 
-  afterAll(async () => {
-    await disconnect();
+  afterEach(async () => {
+    await destroyDatabase();
   });
 
   describe('given no payload', () => {
     test('should respond with an error', async () => {
-      const response = await request.post('/auth/register').send();
+      const response = await request.post('/auth/sign-up').send();
 
       expect(response.statusCode).toBe(400);
       expect(response.headers['content-type']).toEqual(
@@ -29,7 +27,7 @@ describe('Test Register Endpoint', () => {
 
   describe('given valid payload', () => {
     test('should respond with new user', async () => {
-      const response = await request.post('/auth/register').send({
+      const response = await request.post('/auth/sign-up').send({
         firstName: 'admin2',
         lastName: 'admin2',
         email: 'admin2@admin.pl',
@@ -40,7 +38,7 @@ describe('Test Register Endpoint', () => {
       expect(response.headers['content-type']).toEqual(
         expect.stringContaining('json')
       );
-      expect(response.body).toHaveProperty('_id');
+      expect(response.body).toHaveProperty('id');
     });
   });
 });

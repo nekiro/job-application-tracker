@@ -1,30 +1,30 @@
 import supertest from 'supertest';
-import app from '../src/app';
-import { connect, disconnect } from './mocks/db';
-import seedUsers from './seeds/users';
-import mockToken from './mocks/token';
+import app from '../../src/app';
+import { mockToken } from '../mocks/token';
+import seedUsers from '../seeds/users';
+import { createDatabase, destroyDatabase } from '../mocks/db';
 
 const request = supertest(app);
 
-describe('Test Login Endpoint', () => {
+describe('API Sign-in - authenticate successfully', () => {
   let token;
 
-  beforeAll(async () => {
-    await connect();
+  beforeEach(async () => {
+    await createDatabase();
     await seedUsers();
 
     // generate mock token
     ({ token } = await mockToken());
   });
 
-  afterAll(async () => {
-    await disconnect();
+  afterEach(async () => {
+    await destroyDatabase();
   });
 
   describe('given no payload', () => {
     test('should respond with an error', async () => {
       const response = await request
-        .post('/auth/login')
+        .post('/auth/sign-in')
         .set('Authorization', `Bearer ${token}`)
         .send();
 
@@ -39,7 +39,7 @@ describe('Test Login Endpoint', () => {
   describe('given valid payload', () => {
     test('should respond with valid token', async () => {
       const response = await request
-        .post('/auth/login')
+        .post('/auth/sign-in')
         .set('Authorization', `Bearer ${token}`)
         .send({ email: 'admin@admin.pl', password: 'admin' });
 

@@ -1,34 +1,34 @@
 import supertest from 'supertest';
-import app from '../src/app';
-import { connect, disconnect } from './mocks/db';
-import seedUsers from './seeds/users';
-import mockToken from './mocks/token';
+import app from '../../src/app';
+import mockToken from '../mocks/token';
+import seedUsers from '../seeds/users';
+import { createDatabase, destroyDatabase } from '../mocks/db';
 
 const request = supertest(app);
 
-describe('Test Delete User Endpoint', () => {
+describe('API Delete User - delete user successfully', () => {
   let user, token;
 
-  beforeAll(async () => {
-    await connect();
+  beforeEach(async () => {
+    await createDatabase();
     await seedUsers();
 
     // generate mock token
     ({ user, token } = await mockToken());
   });
 
-  afterAll(async () => {
-    await disconnect();
+  afterEach(async () => {
+    await destroyDatabase();
   });
 
-  describe('given no payload', () => {
+  describe('given invalid user id', () => {
     test('should respond with an error', async () => {
       const response = await request
-        .delete('/users/delete')
+        .delete(`/users/123124`)
         .set('Authorization', `Bearer ${token}`)
-        .send({});
+        .send();
 
-      expect(response.statusCode).toBe(400);
+      expect(response.statusCode).toBe(404);
       expect(response.headers['content-type']).toEqual(
         expect.stringContaining('json')
       );
@@ -36,14 +36,12 @@ describe('Test Delete User Endpoint', () => {
     });
   });
 
-  describe('given valid payload', () => {
+  describe('given valid user id', () => {
     test('should respond with code 200', async () => {
       const response = await request
-        .delete('/users/delete')
+        .delete(`/users/${user.id}`)
         .set('Authorization', `Bearer ${token}`)
-        .send({
-          id: user._id,
-        });
+        .send();
 
       expect(response.statusCode).toBe(200);
     });
