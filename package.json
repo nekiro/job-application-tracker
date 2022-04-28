@@ -3,14 +3,14 @@
     "test": "prisma migrate reset --force --schema ./test/prisma/schema.prisma && prisma db push --schema ./test/prisma/schema.prisma && jest -i",
     "build": "rimraf build && babel --plugins transform-remove-console src --out-dir build --copy-files",
     "start": "NODE_ENV=production node build/server.js",
-    "serverful:dev": "npm run preparedb && nodemon --watch src/ --exec npx babel-node src/server.js",
+    "serverful:dev": "npm run prisma:reset && nodemon --watch src/ --exec npx babel-node src/server.js",
     "prisma:reset": "prisma migrate reset --force && prisma db push",
     "prisma:generate": "prisma generate",
     "sls:offline": "sls offline start",
     "sls:deploy": "sls deploy",
     "lint": "eslint ."
   },
-  "name": "users_microservice",
+  "name": "job-app-tracker",
   "version": "1.0.0",
   "dependencies": {
     "@prisma/client": "^3.13.0",
@@ -29,7 +29,7 @@
   "keywords": [],
   "author": "Nekiro",
   "license": "ISC",
-  "description": "Authentication service",
+  "description": "nice app",
   "devDependencies": {
     "@babel/cli": "^7.17.6",
     "@babel/core": "^7.17.9",
