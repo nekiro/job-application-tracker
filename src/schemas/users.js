@@ -1,6 +1,18 @@
 import Joi from 'joi';
-import { JobLevel } from '../models/job';
-import { JobStatus } from '../models/job';
+
+export const JobStatus = Object.freeze({
+  APPLIED: 1,
+  HR: 2,
+  TECH: 3,
+  ACCEPTED: 4,
+  REJECTED: 5,
+});
+
+export const JobLevel = Object.freeze({
+  JUNIOR: 1,
+  MID: 2,
+  SENIOR: 3,
+});
 
 export const companySchema = Joi.object({
   name: Joi.string().required(),
