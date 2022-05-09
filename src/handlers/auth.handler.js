@@ -27,7 +27,7 @@ export const signIn = async (req, res, next) => {
 
 export const signUp = async (req, res, next) => {
   try {
-    await prisma.User.deleteMany({});
+    //await prisma.User.deleteMany({});
 
     const { firstName, lastName, email, password, role } = req.body;
 
