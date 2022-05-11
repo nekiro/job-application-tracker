@@ -4,7 +4,7 @@ This repository implements API for [job-application-tracker](https://github.com/
 Mentioned project is front end app written in React.
 
 API is being implemented following monolithic architecture.
-Hosted using express at: [Oracle VPS](http://130.61.52.213:3000)
+Hosted using express at: https://api.jobtracker.pl
 
 NOTE: there is serverless implementation in the code (had no heart to remove it), because it was previously hosted on AWS Lambda, but since prisma is used, zipped app is too big.
 Prisma webpack plugin doesn't help either, I guess the only way to make this work is using lambda layers, but I didn't feel like making it work,
