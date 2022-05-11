@@ -1,4 +1,6 @@
 import Jwt from 'jsonwebtoken';
+import { AuthError } from '../middlewares/errorHandler';
+import { Role } from '../middlewares/role';
 
 //todo: use issuer and audience in token verification
 
@@ -19,4 +21,17 @@ export const generateToken = (user) => {
     console.log(err);
     return null;
   }
+};
+
+export const canAccessResource = (user, requestedUserId) => {
+  // admin bypasses resource checks
+  if (user.role === Role.ADMIN) {
+    return true;
+  }
+
+  if (requestedUserId && user.id !== requestedUserId) {
+    return false;
+  }
+
+  return true;
 };

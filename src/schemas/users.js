@@ -18,6 +18,7 @@ export const companySchema = Joi.object({
   name: Joi.string().required(),
   website: Joi.string().allow('').default(''),
   size: Joi.number().default(0),
+  userId: Joi.string().required(),
 });
 
 export const addJob = Joi.object({
@@ -29,8 +30,16 @@ export const addJob = Joi.object({
     status: Joi.number()
       .valid(...Object.values(JobStatus))
       .default(JobStatus.APPLIED),
+    userId: Joi.string().required(),
     appliedAt: Joi.date().default(Date.now),
-    company: Joi.alternatives(Joi.string(), companySchema).required(),
+    company: Joi.alternatives(
+      Joi.string(),
+      Joi.object({
+        name: Joi.string().required(),
+        website: Joi.string().allow('').default(''),
+        size: Joi.number().default(0),
+      })
+    ).required(),
   }),
 });
 

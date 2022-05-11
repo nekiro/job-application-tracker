@@ -1,4 +1,4 @@
 export const Role = Object.freeze({
-  USER: 1,
-  ADMIN: 2,
+  USER: 'USER',
+  ADMIN: 'ADMIN',
 });

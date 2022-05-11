@@ -42,7 +42,7 @@ model User {
     lastName    String
     password    String
     tokenSecret String
-    role        Int       @default(1)
+    role        String    @default("USER")
     jobs        Job[]
     companies   Company[]
 

@@ -7,7 +7,7 @@ export const signUp = Joi.object({
     lastName: Joi.string().required(),
     email: Joi.string().email().required(),
     password: Joi.string().min(5).required(),
-    role: Joi.number()
+    role: Joi.string()
       .valid(...Object.values(Role))
       .default(Role.USER),
   }),

@@ -36,21 +36,22 @@ export const signUp = async (req, res, next) => {
 
     const { firstName, lastName, email, password, role } = req.body;
 
-    let user = await prisma.User.findUnique({ where: { email } });
-    if (user) {
+    let user;
+
+    try {
+      user = await prisma.User.create({
+        data: {
+          firstName,
+          lastName,
+          email,
+          password: await encrypt(password),
+          role,
+          tokenSecret: await generateSalt(6),
+        },
+      });
+    } catch (err) {
       throw new ResourceExistsError('Email already used');
     }
-
-    user = await prisma.User.create({
-      data: {
-        firstName,
-        lastName,
-        email,
-        password: await encrypt(password),
-        role,
-        tokenSecret: await generateSalt(6),
-      },
-    });
 
     res.send(excludeKeys(user, userExcludedKeys));
   } catch (err) {

@@ -22,7 +22,7 @@ export class InvalidRoleError extends Error {
 }
 
 export class AuthError extends Error {
-  constructor(message) {
+  constructor(message = 'Unauthorized') {
     super(message);
     this.name = 'AuthError';
   }

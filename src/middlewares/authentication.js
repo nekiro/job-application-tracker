@@ -1,7 +1,6 @@
 import Jwt, { JsonWebTokenError } from 'jsonwebtoken';
-// import User from '../models/user';
 import { AuthError } from './errorHandler';
-import { Role } from './role';
+// import { Role } from './role';
 import prisma from '../database';
 
 // options = {
@@ -9,17 +8,26 @@ import prisma from '../database';
 //   sameUserOrAdmin: boolean
 // }
 
-const checkOptions = (req, res, options) => {
-  const { sameUserOrAdmin, sameUser } = options;
+const checkOptions = (user, options) => {
+  // const { sameUserOrAdmin, sameUser, allowedRoles } = options;
+  const { allowedRoles } = options;
 
   if (
-    (sameUserOrAdmin &&
-      req.params[sameUserOrAdmin] !== req.user.id &&
-      req.user.role !== Role.ADMIN) ||
-    (sameUser && req.params[sameUserOrAdmin] === req.user.id)
+    allowedRoles &&
+    allowedRoles.length > 0 &&
+    !allowedRoles.includes(user.role)
   ) {
     throw new AuthError('Unauthorized');
   }
+
+  // if (
+  //   (sameUserOrAdmin &&
+  //     req.params[sameUserOrAdmin] !== req.user.id &&
+  //     req.user.role !== Role.ADMIN) ||
+  //   (sameUser && req.params[sameUserOrAdmin] === req.user.id)
+  // ) {
+  //   throw new AuthError('Unauthorized');
+  // }
 };
 
 export const authenticate =
@@ -49,7 +57,7 @@ export const authenticate =
       req.user = user;
 
       // throws exception, so we dont need to check anything here
-      checkOptions(req, res, options);
+      checkOptions(user, options);
 
       next();
     } catch (err) {

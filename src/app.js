@@ -5,6 +5,9 @@ import errorHandler from './middlewares/errorHandler';
 import 'dotenv/config';
 import { NotFoundError } from './middlewares/errorHandler';
 
+// routes
+import jobsRouter from './routes/jobs';
+import companiesRouter from './routes/companies';
 import usersRouter from './routes/users';
 import authRouter from './routes/auth';
 
@@ -19,6 +22,8 @@ app.use(express.urlencoded({ extended: false }));
 app.disable('x-powered-by');
 
 // routes
+app.use('/jobs', jobsRouter);
+app.use('/companies', companiesRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 
