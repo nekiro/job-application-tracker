@@ -10,7 +10,7 @@ export const signIn = async (req, res, next) => {
     const { email, password } = req.body;
 
     const user = await prisma.User.findFirst({
-      where: { email, password: encrypt(password) },
+      where: { email, password: await encrypt(password) },
     });
     if (!user) {
       throw new AuthError("Email or password doesn't match");
