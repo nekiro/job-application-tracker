@@ -11,7 +11,7 @@ Prisma webpack plugin doesn't help either, I guess the only way to make this wor
 so I just took free tier oracle vps and created auto deploy through github actions, works wonderfully!
 
 Documentation:
-https://documenter.getpostman.com/view/9956320/UyrBhvHX#ff941169-a0e5-4f1f-9d83-f4b2896d50a2
+[Postman](https://documenter.getpostman.com/view/9956320/UyrBhvHX)
 
 The Problem
 
