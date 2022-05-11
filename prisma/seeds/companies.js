@@ -22,7 +22,6 @@ const seedCompanies = async () => {
     try {
       const company = companies[index];
       if (!company) {
-        console.log('?');
         continue;
       }
 

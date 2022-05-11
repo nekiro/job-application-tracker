@@ -1,5 +1,5 @@
 import prisma from '../../src/database';
-import { generateSalt } from '../../src/utils/crypt';
+import { encrypt, generateSalt } from '../../src/utils/crypt';
 
 const users = [
   {
@@ -24,7 +24,11 @@ const seedUsers = async () => {
   for (const user of users) {
     try {
       await prisma.user.create({
-        data: { ...user, tokenSecret: await generateSalt(6) },
+        data: {
+          ...user,
+          tokenSecret: await generateSalt(6),
+          password: await encrypt(user.password),
+        },
       });
     } catch (err) {
       // ignore err
