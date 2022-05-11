@@ -1,6 +1,6 @@
 import { generateToken } from '../utils/authentication';
 import { AuthError, ResourceExistsError } from '../middlewares/errorHandler';
-import { generateSalt, encrypt } from '../utils/crypt';
+import { generateSalt, encrypt, compareHash } from '../utils/crypt';
 import prisma from '../database';
 import { excludeKeys, formatSuccess } from '../utils';
 import { userExcludedKeys } from '../schemas/auth';
@@ -10,9 +10,14 @@ export const signIn = async (req, res, next) => {
     const { email, password } = req.body;
 
     const user = await prisma.User.findFirst({
-      where: { email, password: await encrypt(password) },
+      where: { email },
     });
+
     if (!user) {
+      throw new AuthError("Email or password doesn't match");
+    }
+
+    if (!(await compareHash(password, user.password))) {
       throw new AuthError("Email or password doesn't match");
     }
 
