@@ -3,11 +3,14 @@ import {
   JsonWebTokenError,
   NotBeforeError,
 } from 'jsonwebtoken';
-import { PrismaClientKnownRequestError } from '@prisma/client';
 import { excludeKeys } from '../utils';
+import { NextFunction, Request, Response } from 'express';
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 
 export class ValidationError extends Error {
-  constructor(what) {
+  what: any;
+
+  constructor(what: any) {
     super('');
     this.what = what.details;
     this.name = 'ValidationError';
@@ -15,7 +18,7 @@ export class ValidationError extends Error {
 }
 
 export class InvalidRoleError extends Error {
-  constructor(message) {
+  constructor(message: string) {
     super(message);
     this.name = 'InvalidRoleError';
   }
@@ -29,25 +32,30 @@ export class AuthError extends Error {
 }
 
 export class NotFoundError extends Error {
-  constructor(message) {
+  constructor(message: string) {
     super(message);
     this.name = 'NotFoundError';
   }
 }
 
 export class ResourceExistsError extends Error {
-  constructor(message) {
+  constructor(message: string) {
     super(message);
     this.name = 'ResourceExistsError';
   }
 }
 
-const errorHandler = (err, _req, res, _next) => {
+const errorHandler = (
+  err: any,
+  _req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
   if (res.headersSent) {
     return _next(err);
   }
 
-  const error = {
+  const error: any = {
     errorType: err.name,
     errorCode: 500,
   };
@@ -56,7 +64,7 @@ const errorHandler = (err, _req, res, _next) => {
     case ValidationError:
       error.error = {};
 
-      err.what.forEach((e) => {
+      err.what.forEach((e: any) => {
         error.error[e.context.key] = e.message.split('"').join('');
       });
 

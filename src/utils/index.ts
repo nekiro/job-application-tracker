@@ -1,4 +1,4 @@
-export const excludeKeys = (fields, omit) => {
+export const excludeKeys = (fields: any, omit: string[]) => {
   const result = { ...fields };
   for (const key in fields) {
     if (omit.includes(key)) {
@@ -9,6 +9,6 @@ export const excludeKeys = (fields, omit) => {
   return result;
 };
 
-export const formatSuccess = (message) => {
+export const formatSuccess = (message: string) => {
   return { message };
 };

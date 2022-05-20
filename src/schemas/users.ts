@@ -14,14 +14,14 @@ export const JobLevel = Object.freeze({
   SENIOR: 3,
 });
 
-export const companySchema = Joi.object({
+export const companySchema: Joi.ObjectSchema = Joi.object({
   name: Joi.string().required(),
   website: Joi.string().allow('').default(''),
   size: Joi.number().default(0),
   userId: Joi.string().required(),
 });
 
-export const addJob = Joi.object({
+export const addJob: Joi.ObjectSchema = Joi.object({
   body: Joi.object({
     name: Joi.string().required(),
     level: Joi.number()
@@ -43,6 +43,6 @@ export const addJob = Joi.object({
   }),
 });
 
-export const addCompany = Joi.object({
+export const addCompany: Joi.ObjectSchema = Joi.object({
   body: companySchema,
 });

@@ -1,13 +1,11 @@
 {
   "scripts": {
     "test": "prisma migrate reset --force --schema ./test/prisma/schema.prisma && prisma db push --schema ./test/prisma/schema.prisma && jest -i",
-    "build": "rimraf build && babel --plugins transform-remove-console src --out-dir build --copy-files",
+    "build": "babel src --out-dir build --extensions \".ts,.js\" --source-maps inline",
     "start": "NODE_ENV=production node build/server.js",
-    "serverful:dev": "nodemon --watch src/ --exec npx babel-node src/server.js",
+    "dev": "nodemon --watch src/ --exec \"tsc && npm run build && node build/server.js\"",
     "prisma:reset": "prisma migrate reset --force && prisma db push",
     "prisma:generate": "prisma generate",
-    "sls:offline": "sls offline start",
-    "sls:deploy": "sls deploy",
     "lint": "eslint ."
   },
   "prisma": {
@@ -16,8 +14,7 @@
   "name": "job-app-tracker",
   "version": "1.0.0",
   "dependencies": {
-    "@prisma/client": "^3.13.0",
-    "babel-plugin-source-map-support": "^2.1.3",
+    "@prisma/client": "^3.14.0",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
@@ -25,9 +22,7 @@
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
-    "mysql": "^2.18.1",
-    "serverless-http": "^3.0.1",
-    "source-map-support": "^0.5.21"
+    "mysql": "^2.18.1"
   },
   "keywords": [],
   "author": "Nekiro",
@@ -36,15 +31,15 @@
   "devDependencies": {
     "@babel/cli": "^7.17.6",
     "@babel/core": "^7.17.9",
-    "@babel/node": "^7.16.8",
-    "@babel/plugin-transform-runtime": "^7.17.0",
     "@babel/preset-env": "^7.16.11",
-    "@babel/runtime": "^7.17.9",
+    "@babel/preset-typescript": "^7.17.12",
+    "@types/bcryptjs": "^2.4.2",
+    "@types/cors": "^2.8.12",
+    "@types/express": "^4.17.13",
     "@types/jest": "^27.4.1",
+    "@types/jsonwebtoken": "^8.5.8",
+    "@types/morgan": "^1.9.3",
     "babel-jest": "^27.5.1",
-    "babel-loader": "^8.2.4",
-    "babel-plugin-transform-remove-console": "^6.9.4",
-    "babel-polyfill": "^6.26.0",
     "eslint": "^8.13.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
@@ -54,14 +49,7 @@
     "prettier": "^2.6.2",
     "prisma": "^3.13.0",
     "rimraf": "^3.0.2",
-    "serverless": "^3.15.2",
-    "serverless-dotenv-plugin": "^4.0.0",
-    "serverless-offline": "^8.7.0",
-    "serverless-webpack": "^5.7.0",
-    "serverless-webpack-prisma": "^1.1.0",
     "supertest": "^6.2.2",
-    "webpack": "^5.72.0",
-    "webpack-cli": "^4.9.2",
-    "webpack-node-externals": "^3.0.0"
+    "typescript": "^4.6.4"
   }
 }

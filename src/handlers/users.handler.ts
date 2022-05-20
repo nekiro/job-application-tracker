@@ -4,13 +4,18 @@ import { formatSuccess, excludeKeys } from '../utils';
 import { userExcludedKeys } from '../schemas/auth';
 import { canAccessResource } from '../utils/authentication';
 import { AuthError } from '../middlewares/errorHandler';
+import { NextFunction, Request, Response } from 'express';
 
-export const deleteUser = async (req, res, next) => {
+export const deleteUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
 
     try {
-      await prisma.User.delete({ where: { id } });
+      await prisma.user.delete({ where: { id } });
     } catch (err) {
       throw new NotFoundError('User not found');
     }
@@ -21,7 +26,11 @@ export const deleteUser = async (req, res, next) => {
   }
 };
 
-export const getUser = async (req, res, next) => {
+export const getUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
 
@@ -29,7 +38,7 @@ export const getUser = async (req, res, next) => {
       throw new AuthError();
     }
 
-    const user = await prisma.User.findUnique({ where: { id } });
+    const user = await prisma.user.findUnique({ where: { id } });
     if (!user) {
       throw new NotFoundError('User not found');
     }
@@ -40,9 +49,13 @@ export const getUser = async (req, res, next) => {
   }
 };
 
-export const getUsers = async (_req, res, next) => {
+export const getUsers = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const users = await prisma.User.findMany();
+    const users = await prisma.user.findMany();
     res.send(users.map((user) => excludeKeys(user, userExcludedKeys)));
   } catch (err) {
     next(err);

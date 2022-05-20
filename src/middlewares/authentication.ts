@@ -2,13 +2,14 @@ import Jwt, { JsonWebTokenError } from 'jsonwebtoken';
 import { AuthError } from './errorHandler';
 // import { Role } from './role';
 import prisma from '../database';
+import { NextFunction, Request, Response } from 'express';
 
 // options = {
 //   sameUser: boolean,
 //   sameUserOrAdmin: boolean
 // }
 
-const checkOptions = (user, options) => {
+const checkOptions = (user: any, options: any) => {
   // const { sameUserOrAdmin, sameUser, allowedRoles } = options;
   const { allowedRoles } = options;
 
@@ -32,7 +33,7 @@ const checkOptions = (user, options) => {
 
 export const authenticate =
   (options = {}) =>
-  async (req, res, next) => {
+  async (req: Request, _res: Response, next: NextFunction) => {
     try {
       const authHeader = req.headers['authorization'];
       const token = authHeader && authHeader.split(' ')[1];
@@ -40,12 +41,12 @@ export const authenticate =
         throw new JsonWebTokenError('Token is required');
       }
 
-      const decodedPayload = Jwt.decode(token);
+      const decodedPayload = Jwt.decode(token) as any;
       if (!decodedPayload) {
         throw new JsonWebTokenError('Malformed token data');
       }
 
-      const user = await prisma.User.findFirst({
+      const user = await prisma.user.findFirst({
         where: { id: decodedPayload.data.id },
       });
       if (!user) {

@@ -1,8 +1,13 @@
 import { AuthError, NotFoundError } from '../middlewares/errorHandler';
 import prisma from '../database';
 import { canAccessResource } from '../utils/authentication';
+import { NextFunction, Request, Response } from 'express';
 
-export const addCompany = async (req, res, next) => {
+export const addCompany = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { name, website, size, userId } = req.body;
 
@@ -33,7 +38,11 @@ export const addCompany = async (req, res, next) => {
   }
 };
 
-export const getCompany = async (req, res, next) => {
+export const getCompany = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
 
@@ -54,9 +63,13 @@ export const getCompany = async (req, res, next) => {
   }
 };
 
-export const getCompanies = async (req, res, next) => {
+export const getCompanies = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { userId } = req.query;
+    const userId = req.query.userId as string;
 
     if (!canAccessResource(req.user, userId)) {
       throw new AuthError();

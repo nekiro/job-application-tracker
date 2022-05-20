@@ -4,12 +4,17 @@ import { generateSalt, encrypt, compareHash } from '../utils/crypt';
 import prisma from '../database';
 import { excludeKeys, formatSuccess } from '../utils';
 import { userExcludedKeys } from '../schemas/auth';
+import { NextFunction, Request, Response } from 'express';
 
-export const signIn = async (req, res, next) => {
+export const signIn = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { email, password } = req.body;
 
-    const user = await prisma.User.findFirst({
+    const user = await prisma.user.findFirst({
       where: { email },
     });
 
@@ -30,16 +35,18 @@ export const signIn = async (req, res, next) => {
   }
 };
 
-export const signUp = async (req, res, next) => {
+export const signUp = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    //await prisma.User.deleteMany({});
-
     const { firstName, lastName, email, password, role } = req.body;
 
     let user;
 
     try {
-      user = await prisma.User.create({
+      user = await prisma.user.create({
         data: {
           firstName,
           lastName,
@@ -59,12 +66,16 @@ export const signUp = async (req, res, next) => {
   }
 };
 
-export const signOut = async (req, res, next) => {
+export const signOut = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { user } = req;
 
     // revoke token
-    await prisma.User.update({
+    await prisma.user.update({
       where: { id: user.id },
       data: {
         tokenSecret: await generateSalt(6),

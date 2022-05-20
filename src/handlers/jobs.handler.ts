@@ -2,8 +2,13 @@ import { NotFoundError } from '../middlewares/errorHandler';
 import prisma from '../database';
 import { canAccessResource } from '../utils/authentication';
 import { AuthError } from '../middlewares/errorHandler';
+import { NextFunction, Request, Response } from 'express';
 
-export const addJob = async (req, res, next) => {
+export const addJob = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { name, level, status, company, userId } = req.body;
 
@@ -41,12 +46,12 @@ export const addJob = async (req, res, next) => {
     }
 
     // create job offer
-    const jobOffer = await prisma.Job.create({
+    const jobOffer = await prisma.job.create({
       data: {
         name,
         level,
         status,
-        companyId: companyObj.id,
+        companyId: companyObj?.id as string,
         userId: user.id,
       },
     });
@@ -57,7 +62,11 @@ export const addJob = async (req, res, next) => {
   }
 };
 
-export const getJob = async (req, res, next) => {
+export const getJob = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
     const { id } = req.params;
 
@@ -76,9 +85,13 @@ export const getJob = async (req, res, next) => {
   }
 };
 
-export const getJobs = async (req, res, next) => {
+export const getJobs = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   try {
-    const { userId } = req.query;
+    const userId = req.query.userId as string;
 
     if (!canAccessResource(req.user, userId)) {
       throw new AuthError();

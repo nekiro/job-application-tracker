@@ -1,15 +1,24 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import errorHandler from './middlewares/errorHandler';
 import 'dotenv/config';
 import { NotFoundError } from './middlewares/errorHandler';
+import { User as PrismaUser } from '@prisma/client';
 
 // routes
 import jobsRouter from './routes/jobs';
 import companiesRouter from './routes/companies';
 import usersRouter from './routes/users';
 import authRouter from './routes/auth';
+
+declare global {
+  namespace Express {
+    interface Request {
+      user: PrismaUser;
+    }
+  }
+}
 
 const app = express();
 
@@ -31,7 +40,7 @@ app.use('/auth', authRouter);
 app.use(errorHandler);
 
 // unknown routes
-app.use((req, res, next) =>
+app.use((req: Request, res: Response, next: NextFunction) =>
   errorHandler(new NotFoundError('Invalid route'), req, res, next)
 );
 
