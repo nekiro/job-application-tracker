@@ -1,5 +1,5 @@
 import prisma from '../../src/database';
-import { encrypt, generateSalt } from '../../src/utils/crypt';
+import { encrypt, generateSalt } from '../../util/crypt';
 
 const users = [
   {

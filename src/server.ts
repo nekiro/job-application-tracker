@@ -1,5 +1,5 @@
 import app from './app';
-import prisma from './database';
+import prisma from './prisma';
 
 prisma.$connect().then(() => {
   console.log(

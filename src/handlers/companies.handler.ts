@@ -1,6 +1,6 @@
 import { AuthError, NotFoundError } from '../middlewares/errorHandler';
-import prisma from '../database';
-import { canAccessResource } from '../utils/authentication';
+import prisma from '../prisma';
+import { canAccessResource } from '../util/authentication';
 import { NextFunction, Request, Response } from 'express';
 
 export const addCompany = async (

@@ -4,6 +4,7 @@
     "target": "ES2018",
     // Search under node_modules for non-relative imports.
     "moduleResolution": "node",
+    "rootDir": "src",
     // Process & infer types from .js files.
     "allowJs": true,
     // Don't emit; allow Babel to transform files.
@@ -11,8 +12,10 @@
     // Enable strictest settings like strictNullChecks & noImplicitAny.
     "strict": true,
     // Import non-ES modules as default imports.
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "strictNullChecks": true
   },
-  "include": ["src"],
+  "include": ["src/**/*", "__test__"],
   "exclude": ["node_modules", "build"]
 }

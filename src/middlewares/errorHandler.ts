@@ -3,7 +3,7 @@ import {
   JsonWebTokenError,
   NotBeforeError,
 } from 'jsonwebtoken';
-import { excludeKeys } from '../utils';
+import { excludeKeys } from '../util';
 import { NextFunction, Request, Response } from 'express';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 

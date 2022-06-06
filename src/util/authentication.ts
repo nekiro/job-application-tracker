@@ -6,6 +6,10 @@ import { Role } from '../middlewares/role';
 
 export const generateToken = (user: User) => {
   try {
+    if (!user || !user.id || !user.email || !user.role) {
+      return null;
+    }
+
     const exp =
       Math.floor(Date.now() / 1000) + Number(process.env.TOKEN_LIFETIME);
     const token = Jwt.sign(
@@ -18,12 +22,15 @@ export const generateToken = (user: User) => {
 
     return { token, expiresAt: exp };
   } catch (err) {
-    console.log(err);
     return null;
   }
 };
 
 export const canAccessResource = (user: User, requestedUserId: string) => {
+  if (!user || !user.id || !user.role) {
+    return false;
+  }
+
   // admin bypasses resource checks
   if (user.role === Role.ADMIN) {
     return true;

@@ -1,8 +1,8 @@
 import { NotFoundError } from '../middlewares/errorHandler';
-import prisma from '../database';
-import { formatSuccess, excludeKeys } from '../utils';
+import prisma from '../prisma';
+import { formatSuccess, excludeKeys } from '../util';
 import { userExcludedKeys } from '../schemas/auth';
-import { canAccessResource } from '../utils/authentication';
+import { canAccessResource } from '../util/authentication';
 import { AuthError } from '../middlewares/errorHandler';
 import { NextFunction, Request, Response } from 'express';
 

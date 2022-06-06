@@ -1,7 +1,7 @@
 import Jwt, { JsonWebTokenError } from 'jsonwebtoken';
 import { AuthError } from './errorHandler';
 // import { Role } from './role';
-import prisma from '../database';
+import prisma from '../prisma';
 import { NextFunction, Request, Response } from 'express';
 
 // options = {

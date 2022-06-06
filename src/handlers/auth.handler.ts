@@ -1,8 +1,8 @@
-import { generateToken } from '../utils/authentication';
+import { generateToken } from '../util/authentication';
 import { AuthError, ResourceExistsError } from '../middlewares/errorHandler';
-import { generateSalt, encrypt, compareHash } from '../utils/crypt';
-import prisma from '../database';
-import { excludeKeys, formatSuccess } from '../utils';
+import { generateSalt, encrypt, compareHash } from '../util/crypt';
+import prisma from '../prisma';
+import { excludeKeys, formatSuccess } from '../util';
 import { userExcludedKeys } from '../schemas/auth';
 import { NextFunction, Request, Response } from 'express';
 
@@ -26,7 +26,7 @@ export const signIn = async (
       throw new AuthError("Email or password doesn't match");
     }
 
-    res.send({
+    res.json({
       user: excludeKeys(user, userExcludedKeys),
       ...generateToken(user),
     });

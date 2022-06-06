@@ -1,4 +1,4 @@
-export const excludeKeys = (fields: any, omit: string[]) => {
+export const excludeKeys = (fields: Record<string, any>, omit: string[]) => {
   const result = { ...fields };
   for (const key in fields) {
     if (omit.includes(key)) {
