@@ -1,5 +1,6 @@
 import { generateToken } from '../util/authentication';
-import { AuthError, ResourceExistsError } from '../middlewares/errorHandler';
+import AuthError from '../errors/AuthError';
+import ResourceExistsError from '../errors/ResourceExistsError';
 import { generateSalt, encrypt, compareHash } from '../util/crypt';
 import prisma from '../prisma';
 import { excludeKeys, formatSuccess } from '../util';
@@ -60,7 +61,7 @@ export const signUp = async (
       throw new ResourceExistsError('Email already used');
     }
 
-    res.send(excludeKeys(user, userExcludedKeys));
+    res.json(excludeKeys(user, userExcludedKeys));
   } catch (err) {
     next(err);
   }
@@ -82,7 +83,7 @@ export const signOut = async (
       },
     });
 
-    res.status(200).send(formatSuccess('Logged out succesfully'));
+    res.json(formatSuccess('Logged out succesfully'));
   } catch (err) {
     next(err);
   }

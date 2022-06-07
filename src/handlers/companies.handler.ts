@@ -1,4 +1,5 @@
-import { AuthError, NotFoundError } from '../middlewares/errorHandler';
+import AuthError from '../errors/AuthError';
+import NotFoundError from '../errors/NotFoundError';
 import prisma from '../prisma';
 import { canAccessResource } from '../util/authentication';
 import { NextFunction, Request, Response } from 'express';

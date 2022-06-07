@@ -1,5 +1,5 @@
 import Jwt, { JsonWebTokenError } from 'jsonwebtoken';
-import { AuthError } from './errorHandler';
+import AuthError from '../errors/AuthError';
 // import { Role } from './role';
 import prisma from '../prisma';
 import { NextFunction, Request, Response } from 'express';
