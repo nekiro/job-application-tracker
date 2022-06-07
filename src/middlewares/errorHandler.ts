@@ -3,7 +3,6 @@ import {
   JsonWebTokenError,
   NotBeforeError,
 } from 'jsonwebtoken';
-import { excludeKeys } from '../util';
 import { NextFunction, Request, Response } from 'express';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime';
 import ValidationError from '../errors/ValidationError';
@@ -16,10 +15,10 @@ const errorHandler = (
   err: any,
   _req: Request,
   res: Response,
-  _next: NextFunction
+  next: NextFunction
 ) => {
   if (res.headersSent) {
-    return _next(err);
+    return next(err);
   }
 
   const error: any = {

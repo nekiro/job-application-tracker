@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { ValidationError } from './errorHandler';
+
+import ValidationError from '../errors/ValidationError';
 
 const options = {
   abortEarly: false,

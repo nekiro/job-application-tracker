@@ -1,7 +1,7 @@
-import { NotFoundError } from '../middlewares/errorHandler';
+import NotFoundError from '../errors/NotFoundError';
 import prisma from '../prisma';
 import { canAccessResource } from '../util/authentication';
-import { AuthError } from '../middlewares/errorHandler';
+import AuthError from '../errors/AuthError';
 import { NextFunction, Request, Response } from 'express';
 
 export const addJob = async (

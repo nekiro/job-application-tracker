@@ -1,9 +1,9 @@
-import { NotFoundError } from '../middlewares/errorHandler';
 import prisma from '../prisma';
 import { formatSuccess, excludeKeys } from '../util';
 import { userExcludedKeys } from '../schemas/auth';
 import { canAccessResource } from '../util/authentication';
-import { AuthError } from '../middlewares/errorHandler';
+import AuthError from '../errors/AuthError';
+import NotFoundError from '../errors/NotFoundError';
 import { NextFunction, Request, Response } from 'express';
 
 export const deleteUser = async (

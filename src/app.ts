@@ -3,7 +3,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import errorHandler from './middlewares/errorHandler';
 import 'dotenv/config';
-import { NotFoundError } from './middlewares/errorHandler';
+import NotFoundError from './errors/NotFoundError';
 import { User as PrismaUser } from '@prisma/client';
 
 // routes
