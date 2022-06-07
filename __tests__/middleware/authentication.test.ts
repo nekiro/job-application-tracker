@@ -20,10 +20,12 @@ describe('authenticate', () => {
     test('should add user to request', async () => {
       const mockedValue = 'foo';
 
+      //@ts-ignore
       prismaMock.user.findFirst.mockResolvedValue({
         id: mockedValue,
         tokenSecret: 'bar',
       } as any);
+
       const decodeSpy = jest
         .spyOn(Jwt, 'decode')
         .mockReturnValue({ data: { id: 'foo' } });
