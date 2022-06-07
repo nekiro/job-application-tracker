@@ -1,6 +1,6 @@
 import { User } from '@prisma/client';
 import Jwt from 'jsonwebtoken';
-import { Role } from '../middlewares/role';
+import Role from '../models/role';
 
 //todo: use issuer and audience in token verification
 

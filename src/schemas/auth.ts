@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { Role } from '../middlewares/role';
+import Role from '../models/role';
 
 export const signUp: Joi.ObjectSchema = Joi.object({
   body: Joi.object({

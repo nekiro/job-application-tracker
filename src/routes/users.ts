@@ -1,7 +1,7 @@
 import express from 'express';
 import * as handler from '../handlers/users.handler';
 import { authenticate } from '../middlewares/authentication';
-import { Role } from '../middlewares/role';
+import Role from '../models/role';
 
 const router = express.Router();
 

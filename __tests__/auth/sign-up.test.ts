@@ -1,7 +1,7 @@
 import { prismaMock } from '../../src/singleton';
 import { getMockReq, getMockRes } from '@jest-mock/express';
 import { signUp } from '../../src/handlers/auth.handler';
-import { Role } from '../../src/middlewares/role';
+import { Role } from '../../src/models/role';
 import ResourceExistsError from '../../src/errors/ResourceExistsError';
 
 describe('Sign-up', () => {
