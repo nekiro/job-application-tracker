@@ -31,6 +31,7 @@ jobs:
             touch .env
             echo DATABASE_URL=${{ secrets.DATABASE_URL }} > .env
             echo TOKEN_SECRET=${{ secrets.TOKEN_SECRET }} >> .env
+            echo DOCUMENTATION_URL=${{ secrets.DOCUMENTATION_URL }} >> .env
             echo TOKEN_LIFETIME=3600 >> .env
             echo PORT=3000 >> .env
 
