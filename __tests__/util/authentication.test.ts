@@ -3,7 +3,7 @@ import {
   canAccessResource,
 } from '../../src/util/authentication';
 import { User } from '@prisma/client';
-import { Role } from '../../src/middlewares/role';
+import Role from '../../src/models/role';
 
 describe('generateToken', () => {
   describe('given user with valid properties', () => {
@@ -18,7 +18,7 @@ describe('generateToken', () => {
         role: Role.USER,
       };
 
-      const data = generateToken(mockedUser);
+      const data = generateToken(mockedUser) as any;
 
       expect(data.expiresAt).toEqual(expect.any(Number));
       expect(data.token).toEqual(expect.any(String));
