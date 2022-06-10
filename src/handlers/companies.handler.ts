@@ -33,7 +33,7 @@ export const addCompany = async (
       },
     });
 
-    res.send(company);
+    res.json(company);
   } catch (err) {
     next(err);
   }
@@ -58,7 +58,7 @@ export const getCompany = async (
       throw new NotFoundError('Company not found');
     }
 
-    res.send(company);
+    res.json(company);
   } catch (err) {
     next(err);
   }
@@ -82,7 +82,7 @@ export const getCompanies = async (
       },
     });
 
-    res.send(companies);
+    res.json(companies);
   } catch (err) {
     next(err);
   }

@@ -28,7 +28,7 @@ describe('excludeKeys', () => {
   describe('given invalid arguments', () => {
     test('should return null', async () => {
       for (const val of [null, undefined]) {
-        const filtered = excludeKeys(val, val as any);
+        const filtered = excludeKeys(val as any, val as any);
         expect(filtered).toEqual({});
       }
     });
