@@ -1,9 +1,4 @@
-# This workflow will do a clean install of node dependencies,
-# build the source code and run tests across different versions of node
-# For more information see:
-# https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
-name: express CI
+name: Code coverage
 
 on:
   push:
@@ -20,11 +15,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - name: Install deps
-        run: npm i
+
+      - name: Install dependencies
+        run: npm install
+
       - name: Run tests
-        run: npm run test
+        run: npm run coverage
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
