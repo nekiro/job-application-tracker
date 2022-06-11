@@ -1,7 +1,7 @@
 import { getMockReq, getMockRes } from '@jest-mock/express';
 import { prismaMock } from '../../src/singleton';
 import { authenticate } from '../../src/middlewares/authentication';
-import Jwt from 'jsonwebtoken';
+import Jwt, { JsonWebTokenError } from 'jsonwebtoken';
 
 describe('authenticate', () => {
   describe('given no token', () => {
@@ -12,7 +12,49 @@ describe('authenticate', () => {
 
       await authenticate()(req, res, next);
 
-      expect(next).toHaveBeenCalled();
+      expect(next).toHaveBeenCalledWith(
+        new JsonWebTokenError('Token is required')
+      );
+    });
+  });
+
+  describe('given malformed token', () => {
+    test('should call next with error', async () => {
+      const mockedValue = 'foo';
+
+      jest.spyOn(Jwt, 'decode').mockReturnValue(null);
+
+      const req = getMockReq({
+        headers: { authorization: `Bearer ${mockedValue}` },
+      });
+      const { res, next } = getMockRes();
+
+      await authenticate()(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(
+        new JsonWebTokenError('Malformed token data')
+      );
+    });
+  });
+
+  describe('given token with invalid user', () => {
+    test('should call next with error', async () => {
+      const mockedValue = 'foo';
+
+      jest.spyOn(Jwt, 'decode').mockReturnValue({ data: { id: 'foo' } });
+
+      prismaMock.user.findFirst.mockResolvedValue(null);
+
+      const req = getMockReq({
+        headers: { authorization: `Bearer ${mockedValue}` },
+      });
+      const { res, next } = getMockRes();
+
+      await authenticate()(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(
+        new JsonWebTokenError('Malformed token data')
+      );
     });
   });
 

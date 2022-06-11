@@ -27,7 +27,7 @@ export const addJob = async (
 
     let companyObj = null;
 
-    if (typeof company == 'object') {
+    if (typeof company === 'object') {
       // if company is an object, we have to create and insert it too
       companyObj = await prisma.company.create({
         data: {
@@ -37,7 +37,7 @@ export const addJob = async (
           userId: user.id,
         },
       });
-    } else if (typeof company == 'string') {
+    } else if (typeof company === 'string') {
       // company is a string (id), so it already exists
       companyObj = await prisma.company.findFirst({ where: { id: company } });
       if (!companyObj) {
@@ -56,7 +56,7 @@ export const addJob = async (
       },
     });
 
-    res.send(jobOffer);
+    res.json(jobOffer);
   } catch (err) {
     next(err);
   }
@@ -79,7 +79,7 @@ export const getJob = async (
       throw new NotFoundError('Job not found');
     }
 
-    res.send(job);
+    res.json(job);
   } catch (err) {
     next(err);
   }
@@ -100,7 +100,7 @@ export const getJobs = async (
     // TODO: pagination?
     const jobs = await prisma.job.findMany({ where: { userId } });
 
-    res.send(jobs);
+    res.json(jobs);
   } catch (err) {
     next(err);
   }

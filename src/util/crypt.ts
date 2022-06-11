@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 
-export const generateSalt = async (rounds: number): Promise<string> => {
+export const generateSalt = async (rounds: number = 6): Promise<string> => {
   return await bcrypt.genSalt(rounds);
 };
 

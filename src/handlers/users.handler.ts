@@ -20,7 +20,7 @@ export const deleteUser = async (
       throw new NotFoundError('User not found');
     }
 
-    res.send(formatSuccess('Deleted succesfully'));
+    res.json(formatSuccess('Deleted succesfully'));
   } catch (err) {
     next(err);
   }
@@ -43,7 +43,7 @@ export const getUser = async (
       throw new NotFoundError('User not found');
     }
 
-    res.send(excludeKeys(user, userExcludedKeys));
+    res.json(excludeKeys(user, userExcludedKeys));
   } catch (err) {
     next(err);
   }
@@ -56,7 +56,7 @@ export const getUsers = async (
 ) => {
   try {
     const users = await prisma.user.findMany();
-    res.send(users.map((user) => excludeKeys(user, userExcludedKeys)));
+    res.json(users.map((user) => excludeKeys(user, userExcludedKeys)));
   } catch (err) {
     next(err);
   }

@@ -1,4 +1,4 @@
-import Jwt, { JsonWebTokenError } from 'jsonwebtoken';
+import Jwt, { decode, JsonWebTokenError, JwtPayload } from 'jsonwebtoken';
 import AuthError from '../errors/AuthError';
 // import { Role } from './role';
 import prisma from '../prisma';
@@ -9,27 +9,27 @@ import { NextFunction, Request, Response } from 'express';
 //   sameUserOrAdmin: boolean
 // }
 
-const checkOptions = (user: any, options: any) => {
-  // const { sameUserOrAdmin, sameUser, allowedRoles } = options;
-  const { allowedRoles } = options;
+// const checkOptions = (user: any, options: any) => {
+//   // const { sameUserOrAdmin, sameUser, allowedRoles } = options;
+//   const { allowedRoles } = options;
 
-  if (
-    allowedRoles &&
-    allowedRoles.length > 0 &&
-    !allowedRoles.includes(user.role)
-  ) {
-    throw new AuthError('Unauthorized');
-  }
+//   if (
+//     allowedRoles &&
+//     allowedRoles.length > 0 &&
+//     !allowedRoles.includes(user.role)
+//   ) {
+//     throw new AuthError('Unauthorized');
+//   }
 
-  // if (
-  //   (sameUserOrAdmin &&
-  //     req.params[sameUserOrAdmin] !== req.user.id &&
-  //     req.user.role !== Role.ADMIN) ||
-  //   (sameUser && req.params[sameUserOrAdmin] === req.user.id)
-  // ) {
-  //   throw new AuthError('Unauthorized');
-  // }
-};
+//   // if (
+//   //   (sameUserOrAdmin &&
+//   //     req.params[sameUserOrAdmin] !== req.user.id &&
+//   //     req.user.role !== Role.ADMIN) ||
+//   //   (sameUser && req.params[sameUserOrAdmin] === req.user.id)
+//   // ) {
+//   //   throw new AuthError('Unauthorized');
+//   // }
+// };
 
 export const authenticate =
   (options = {}) =>
@@ -58,7 +58,7 @@ export const authenticate =
       req.user = user;
 
       // throws exception, so we dont need to check anything here
-      checkOptions(user, options);
+      //checkOptions(user, options);
 
       next();
     } catch (err) {

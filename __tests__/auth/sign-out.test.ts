@@ -33,4 +33,17 @@ describe('Sign-out', () => {
       });
     });
   });
+
+  describe('given invalid user', () => {
+    test('should call next with error', async () => {
+      prismaMock.user.update.mockRejectedValue(new Error('foo'));
+
+      const req = getMockReq({ user: { id: 'foo' } });
+      const { res, next } = getMockRes();
+
+      await signOut(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(new Error('foo'));
+    });
+  });
 });

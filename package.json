@@ -1,6 +1,7 @@
 {
   "scripts": {
     "test": "jest --verbose",
+    "coverage": "jest --coverage",
     "build": "babel src --out-dir build --extensions \".ts,.js\" --source-maps inline",
     "start": "NODE_ENV=production node build/server.js",
     "dev": "tsc && npm run build && node build/server.js",

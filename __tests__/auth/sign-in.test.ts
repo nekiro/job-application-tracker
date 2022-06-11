@@ -2,12 +2,7 @@ import { prismaMock } from '../../src/singleton';
 import { getMockReq, getMockRes } from '@jest-mock/express';
 import { signIn } from '../../src/handlers/auth.handler';
 import AuthError from '../../src/errors/AuthError';
-
-jest.mock('../../src/util/crypt', () => {
-  return {
-    compareHash: jest.fn().mockResolvedValue(true),
-  };
-});
+import * as crypt from '../../src/util/crypt';
 
 jest.mock('../../src/util/authentication', () => {
   return {
@@ -43,6 +38,10 @@ describe('Sign-in', () => {
         email: 'foo@bar',
       };
 
+      const compareHashSpy = jest
+        .spyOn(crypt, 'compareHash')
+        .mockResolvedValue(true);
+
       prismaMock.user.findFirst.mockResolvedValue({
         ...mockedUser,
         tokenSecret: 'foobar',
@@ -59,13 +58,34 @@ describe('Sign-in', () => {
       expect(prismaMock.user.findFirst).toHaveBeenCalledWith({
         where: { email: mockedUser.email },
       });
-
+      expect(compareHashSpy).toBeCalledWith(
+        req.body.password,
+        mockedUser.password
+      );
       expect(res.json).toHaveBeenCalledWith(
         expect.objectContaining({
           token: expect.any(String),
           expiresAt: expect.any(Number),
           user: expect.objectContaining(mockedUser),
         })
+      );
+    });
+  });
+
+  describe("given valid payload but password doesn' match", () => {
+    test('should call next with AuthError', async () => {
+      prismaMock.user.findFirst.mockResolvedValue({} as any);
+
+      jest.spyOn(crypt, 'compareHash').mockResolvedValue(false);
+
+      const req = getMockReq({ id: 'foo' });
+      const { res, next } = getMockRes();
+
+      await signIn(req, res, next);
+
+      expect(prismaMock.user.findFirst).toHaveBeenCalled();
+      expect(next).toHaveBeenCalledWith(
+        new AuthError("Email or password doesn't match")
       );
     });
   });
