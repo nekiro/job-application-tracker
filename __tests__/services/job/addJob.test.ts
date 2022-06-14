@@ -1,9 +1,6 @@
-import { prismaMock } from '../../src/singleton';
-import { getMockReq, getMockRes } from '@jest-mock/express';
-import { addJob } from '../../src/handlers/jobs.handler';
-import * as authentication from '../../src/util/authentication';
-import AuthError from '../../src/errors/AuthError';
-import NotFoundError from '../../src/errors/NotFoundError';
+import { prismaMock } from '../../../src/singleton';
+import NotFoundError from '../../../src/errors/NotFoundError';
+import * as jobService from '../../../src/services/job.service';
 
 const mockedCompany = {
   name: 'foobar',
@@ -22,10 +19,6 @@ const addJobTest = async (mockedJobData: any) => {
     userId: mockedJobData.userId,
   };
 
-  const canAccessResourceSpy = jest
-    .spyOn(authentication, 'canAccessResource')
-    .mockReturnValue(true);
-
   prismaMock.user.findUnique.mockResolvedValue({ id: 'foo' } as any);
 
   if (typeof mockedJobData.company === 'object') {
@@ -40,18 +33,7 @@ const addJobTest = async (mockedJobData: any) => {
 
   prismaMock.job.create.mockResolvedValue(mockedJob as any);
 
-  const req = getMockReq({
-    body: mockedJobData,
-    user: { id: 'foo' },
-  });
-  const { res, next } = getMockRes();
-
-  await addJob(req, res, next);
-
-  expect(canAccessResourceSpy).toHaveBeenCalledWith(
-    (req as any).user,
-    mockedJobData.userId
-  );
+  const job = await jobService.addJob(mockedJobData);
 
   expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
     select: { id: true },
@@ -72,10 +54,10 @@ const addJobTest = async (mockedJobData: any) => {
     data: mockedJob,
   });
 
-  expect(res.json).toHaveBeenCalledWith(mockedJob);
+  expect(job).toEqual(mockedJob);
 };
 
-describe('addJob', () => {
+describe('addJob service', () => {
   describe('given valid payload', () => {
     test('should create new company or reference it and new job and return it', async () => {
       const mockedJobData = {
@@ -93,38 +75,20 @@ describe('addJob', () => {
     });
   });
 
-  describe('given user with no privileges', () => {
-    test('should call next with AuthError', async () => {
-      jest.spyOn(authentication, 'canAccessResource').mockReturnValue(false);
-
-      const req = getMockReq({
-        user: { id: 'foo' },
-      });
-      const { res, next } = getMockRes();
-
-      await addJob(req, res, next);
-
-      expect(next).toHaveBeenCalledWith(new AuthError());
-    });
-  });
-
   describe('given user that does not exist', () => {
-    test('should call next with NotFoundError', async () => {
-      jest.spyOn(authentication, 'canAccessResource').mockReturnValue(true);
-
+    test('should throw NotFoundError', async () => {
       prismaMock.user.findUnique.mockResolvedValue(null);
 
-      const req = getMockReq();
-      const { res, next } = getMockRes();
-
-      await addJob(req, res, next);
-
-      expect(next).toHaveBeenCalledWith(new NotFoundError('User not found'));
+      try {
+        await jobService.addJob({});
+      } catch (err) {
+        expect(err).toEqual(new NotFoundError('User not found'));
+      }
     });
   });
 
   describe('given company that does not exist', () => {
-    test('should call next with NotFoundError', async () => {
+    test('should throw NotFoundError', async () => {
       const mockedJobData = {
         name: 'foo',
         level: 'bar',
@@ -134,20 +98,14 @@ describe('addJob', () => {
 
       const mockedCompanyId = 'foo';
 
-      jest.spyOn(authentication, 'canAccessResource').mockReturnValue(true);
-
       prismaMock.user.findUnique.mockResolvedValue({} as any);
-
       prismaMock.company.findFirst.mockResolvedValue(null);
 
-      const req = getMockReq({
-        body: { ...mockedJobData, company: mockedCompanyId },
-      });
-      const { res, next } = getMockRes();
-
-      await addJob(req, res, next);
-
-      expect(next).toHaveBeenCalledWith(new NotFoundError('Company not found'));
+      try {
+        await jobService.addJob({ ...mockedJobData, company: mockedCompanyId });
+      } catch (err) {
+        expect(err).toEqual(new NotFoundError('Company not found'));
+      }
     });
   });
 });

@@ -75,7 +75,6 @@ const errorHandler = (
       break;
 
     default:
-      console.log(err);
       break;
   }
 

@@ -1,10 +1,9 @@
-import prisma from '../prisma';
-import { formatSuccess, excludeKeys } from '../util';
+import { excludeKeys } from '../util';
 import { userExcludedKeys } from '../schemas/auth';
 import { canAccessResource } from '../util/authentication';
 import AuthError from '../errors/AuthError';
-import NotFoundError from '../errors/NotFoundError';
 import { NextFunction, Request, Response } from 'express';
+import * as usersService from '../services/user.service';
 
 export const deleteUser = async (
   req: Request,
@@ -14,13 +13,9 @@ export const deleteUser = async (
   try {
     const { id } = req.params;
 
-    try {
-      await prisma.user.delete({ where: { id } });
-    } catch (err) {
-      throw new NotFoundError('User not found');
-    }
+    await usersService.deleteUser(id);
 
-    res.json(formatSuccess('Deleted succesfully'));
+    res.sendStatus(204);
   } catch (err) {
     next(err);
   }
@@ -38,12 +33,9 @@ export const getUser = async (
       throw new AuthError();
     }
 
-    const user = await prisma.user.findUnique({ where: { id } });
-    if (!user) {
-      throw new NotFoundError('User not found');
-    }
+    const user = await usersService.getUser(id);
 
-    res.json(excludeKeys(user, userExcludedKeys));
+    res.json(excludeKeys(user as any, userExcludedKeys));
   } catch (err) {
     next(err);
   }
@@ -55,7 +47,7 @@ export const getUsers = async (
   next: NextFunction
 ) => {
   try {
-    const users = await prisma.user.findMany();
+    const users = await usersService.getUsers();
     res.json(users.map((user) => excludeKeys(user, userExcludedKeys)));
   } catch (err) {
     next(err);

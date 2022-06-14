@@ -1,5 +1,5 @@
 import express from 'express';
-import * as handler from '../handlers/auth.handler';
+import * as handler from '../controllers/auth.controller';
 import * as schemas from '../schemas/auth';
 import { authenticate } from '../middlewares/authentication';
 import { validateRequest } from '../middlewares/validation';

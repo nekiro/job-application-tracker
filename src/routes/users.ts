@@ -1,5 +1,5 @@
 import express from 'express';
-import * as handler from '../handlers/users.handler';
+import * as controller from '../controllers/users.controller';
 import { authenticate } from '../middlewares/authentication';
 import Role from '../models/role';
 
@@ -9,11 +9,11 @@ const router = express.Router();
 router.delete(
   '/:id',
   authenticate({ roles: [Role.ADMIN] }),
-  handler.deleteUser
+  controller.deleteUser
 );
 // TODO: createUser
 
-router.get('/:id', authenticate(), handler.getUser);
-router.get('/', authenticate({ roles: [Role.ADMIN] }), handler.getUsers);
+router.get('/:id', authenticate(), controller.getUser);
+router.get('/', authenticate({ roles: [Role.ADMIN] }), controller.getUsers);
 
 export default router;
