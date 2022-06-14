@@ -2,7 +2,7 @@
   "scripts": {
     "test": "jest --verbose",
     "coverage": "jest --coverage",
-    "build": "babel src --out-dir build --extensions \".ts,.js\" --source-maps inline",
+    "build": "babel src --out-dir build --extensions \".ts,.js\" --source-maps inline --ignore */__tests__",
     "start": "NODE_ENV=production node build/server.js",
     "dev": "tsc && npm run build && node build/server.js",
     "watch": "nodemon --watch src/ --exec \"tsc && npm run build && node build/server.js\"",

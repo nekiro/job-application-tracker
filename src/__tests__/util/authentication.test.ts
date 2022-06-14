@@ -49,6 +49,40 @@ describe('canAccessResource', () => {
     });
   });
 
+  describe('given user that has admin role', () => {
+    test('should return true', async () => {
+      const mockedUser: User = {
+        id: 'foo',
+        email: 'foo@bar',
+        firstName: 'foo',
+        lastName: 'bar',
+        password: 'foo',
+        tokenSecret: 'barSecret',
+        role: Role.ADMIN,
+      };
+
+      const data = canAccessResource(mockedUser, 'foo');
+      expect(data).toBeTruthy();
+    });
+  });
+
+  describe('given user that has different id than requested user and is not admin', () => {
+    test('should return false', async () => {
+      const mockedUser: User = {
+        id: 'foo',
+        email: 'foo@bar',
+        firstName: 'foo',
+        lastName: 'bar',
+        password: 'foo',
+        tokenSecret: 'barSecret',
+        role: Role.USER,
+      };
+
+      const data = canAccessResource(mockedUser, 'bar');
+      expect(data).toBeFalsy();
+    });
+  });
+
   describe('given invalid user and valid requested id', () => {
     test('should return true', async () => {
       const requestedUserId = 'foo';
