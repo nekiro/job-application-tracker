@@ -1,4 +1,4 @@
-import prisma from '../../src/database';
+import prisma from '../';
 import { encrypt, generateSalt } from '../../util/crypt';
 
 const users = [
@@ -18,7 +18,7 @@ const users = [
   },
 ];
 
-const seedUsers = async () => {
+const main = async () => {
   console.log('Seeding users...');
 
   for (const user of users) {
@@ -38,4 +38,4 @@ const seedUsers = async () => {
   console.log('users table:', await prisma.user.findMany());
 };
 
-export default seedUsers;
+export default main;

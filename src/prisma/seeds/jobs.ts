@@ -1,4 +1,4 @@
-import prisma from '../../src/database';
+import prisma from '../';
 
 const jobs = [
   {
@@ -13,7 +13,7 @@ const jobs = [
   },
 ];
 
-const seedJobs = async () => {
+const main = async () => {
   console.log('Seeding jobs...');
 
   const users = await prisma.user.findMany();
@@ -43,4 +43,4 @@ const seedJobs = async () => {
   console.log('jobs table:', await prisma.job.findMany());
 };
 
-export default seedJobs;
+export default main;

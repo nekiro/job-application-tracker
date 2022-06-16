@@ -1,4 +1,4 @@
-import prisma from '../../src/database';
+import prisma from '../';
 
 const companies = [
   {
@@ -13,7 +13,7 @@ const companies = [
   },
 ];
 
-const seedCompanies = async () => {
+const main = async () => {
   console.log('Seeding companies...');
 
   const users = await prisma.user.findMany();
@@ -37,4 +37,4 @@ const seedCompanies = async () => {
   console.log('companies table:', await prisma.company.findMany());
 };
 
-export default seedCompanies;
+export default main;
