@@ -14,7 +14,7 @@ export const addJob = async (
     }
 
     const job = await jobService.addJob(req.body);
-    res.json(job);
+    res.status(201).json(job);
   } catch (err) {
     next(err);
   }

@@ -14,7 +14,7 @@ export const addCompany = async (
     }
 
     const company = await companyService.addCompany(req.body);
-    res.json(company);
+    res.status(201).json(company);
   } catch (err) {
     next(err);
   }

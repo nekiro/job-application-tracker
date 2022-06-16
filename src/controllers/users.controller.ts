@@ -34,7 +34,6 @@ export const getUser = async (
     }
 
     const user = await usersService.getUser(id);
-
     res.json(excludeKeys(user as any, userExcludedKeys));
   } catch (err) {
     next(err);

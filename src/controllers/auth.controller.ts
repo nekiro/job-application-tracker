@@ -27,7 +27,7 @@ export const signUp = async (
   try {
     const user = await authService.signUp(req.body);
 
-    res.json(excludeKeys(user, userExcludedKeys));
+    res.status(201).json(excludeKeys(user, userExcludedKeys));
   } catch (err) {
     next(err);
   }
@@ -43,7 +43,7 @@ export const signOut = async (
 
     await authService.signOut(user.id);
 
-    res.json(formatSuccess('Logged out succesfully'));
+    res.status(204).json(formatSuccess('Logged out succesfully'));
   } catch (err) {
     next(err);
   }
