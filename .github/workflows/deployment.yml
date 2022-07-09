@@ -18,14 +18,15 @@ jobs:
           key: ${{ secrets.PRIVATE_KEY }}
           port: 22
           script: |
-            cd ~/job-application-tracker
+            cd ~/api
 
-            touch .env
-            echo DATABASE_URL=${{ secrets.DATABASE_URL }} > .env
-            echo TOKEN_SECRET=${{ secrets.TOKEN_SECRET }} >> .env
-            echo DOCUMENTATION_URL=${{ secrets.DOCUMENTATION_URL }} >> .env
-            echo TOKEN_LIFETIME=3600 >> .env
-            echo PORT=3000 >> .env
+            echo "
+              DATABASE_URL=${{ secrets.DATABASE_URL }}
+              TOKEN_SECRET=${{ secrets.TOKEN_SECRET }}
+              DOCUMENTATION_URL=${{ secrets.DOCUMENTATION_URL }}
+              TOKEN_LIFETIME=3600
+              PORT=3000
+            " > .env
 
             git fetch --all
             git reset --hard origin/master
@@ -35,5 +36,5 @@ jobs:
             npm run build
             npx prisma generate
 
-            pm2 delete job-app-tracker
-            pm2 start npm --name "job-app-tracker" -- run "start"
+            pm2 delete api
+            pm2 start npm --name "api" -- run "start"
