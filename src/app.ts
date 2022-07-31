@@ -11,6 +11,7 @@ import jobsRouter from './routes/jobs';
 import companiesRouter from './routes/companies';
 import usersRouter from './routes/users';
 import authRouter from './routes/auth';
+import categoryRouter from './routes/categories';
 
 declare global {
   namespace Express {
@@ -32,9 +33,10 @@ app.disable('x-powered-by');
 
 // routes
 app.use('/jobs', jobsRouter);
-app.use('/companies', companiesRouter);
+app.use('/company', companiesRouter);
 app.use('/users', usersRouter);
 app.use('/auth', authRouter);
+app.use('/category', categoryRouter);
 
 // home route
 const homeHtml = `
