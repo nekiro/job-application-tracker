@@ -24,6 +24,7 @@ jobs:
             TOKEN_SECRET=${{ secrets.TOKEN_SECRET }}
             DOCUMENTATION_URL=${{ secrets.DOCUMENTATION_URL }}
             TOKEN_LIFETIME=3600
+            SKIP_AUTH=false
             PORT=3000" > .env
 
             git fetch --all
@@ -32,7 +33,7 @@ jobs:
 
             npm install
             npm run build
-            npx prisma generate
+            npx prisma migrate dev
 
             pm2 delete api || :
             pm2 start npm --name "api" -- run "start"
