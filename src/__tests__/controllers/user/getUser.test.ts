@@ -18,7 +18,7 @@ describe('getUser controller', () => {
       .mockResolvedValue({ id: mockedUserId } as any);
 
     const req = getMockReq({
-      params: { id: mockedUserId },
+      params: { userId: mockedUserId },
     });
     const { res, next } = getMockRes();
 
