@@ -21,9 +21,9 @@ export const addCategory = async (userId: string, data: Category) => {
   return category;
 };
 
-export const getCategory = async (id: string): Promise<Category> => {
+export const getCategory = async (categoryId: string): Promise<Category> => {
   const category = await prisma.category.findFirst({
-    where: { id },
+    where: { id: categoryId },
     include: { jobs: true },
   });
 

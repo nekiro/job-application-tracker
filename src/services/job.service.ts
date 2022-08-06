@@ -1,12 +1,13 @@
-import { Job } from '@prisma/client';
+import { Job, Company } from '@prisma/client';
 import NotFoundError from '../errors/NotFoundError';
 import prisma from '../prisma';
+import JobDTO from '../types/JobDTO';
 
 export const addJob = async (
   userId: string,
   categoryId: string,
-  jobData: any
-): Promise<any> => {
+  jobData: JobDTO
+): Promise<Job> => {
   const { name, company } = jobData;
 
   // check if user id exists
@@ -19,7 +20,7 @@ export const addJob = async (
     throw new NotFoundError('User not found');
   }
 
-  let companyObj = null;
+  let companyObj: Company | null = null;
 
   if (typeof company === 'object') {
     // if company is an object, we have to create and insert it too

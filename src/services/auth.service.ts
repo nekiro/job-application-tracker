@@ -3,6 +3,7 @@ import AuthError from '../errors/AuthError';
 import ResourceExistsError from '../errors/ResourceExistsError';
 import prisma from '../prisma';
 import { userExcludedKeys } from '../schemas/auth';
+import UserDTO from '../types/UserDTO';
 import { excludeKeys } from '../util';
 import { generateToken } from '../util/authentication';
 import { compareHash, encrypt, generateSalt } from '../util/crypt';
@@ -27,19 +28,17 @@ export const signIn = async (email: string, password: string): Promise<any> => {
   };
 };
 
-export const signUp = async (userData: User): Promise<any> => {
+export const signUp = async (userData: UserDTO): Promise<User> => {
   try {
     const { firstName, lastName, email, password, role } = userData;
 
     const user = await createUser({
-      data: {
-        firstName,
-        lastName,
-        email,
-        password: await encrypt(password),
-        role,
-        tokenSecret: await generateSalt(6),
-      },
+      firstName,
+      lastName,
+      email,
+      password: await encrypt(password),
+      role,
+      tokenSecret: await generateSalt(6),
     });
 
     return user;

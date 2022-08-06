@@ -1,8 +1,9 @@
 import { Company } from '@prisma/client';
 import NotFoundError from '../errors/NotFoundError';
 import prisma from '../prisma';
+import CompanyDTO from '../types/CompanyDTO';
 
-export const addCompany = async (companyData: any): Promise<Company> => {
+export const addCompany = async (companyData: CompanyDTO): Promise<Company> => {
   const { name, website, size, userId } = companyData;
 
   const user = await prisma.user.findUnique({
@@ -25,9 +26,9 @@ export const addCompany = async (companyData: any): Promise<Company> => {
   return company;
 };
 
-export const getCompany = async (id: string): Promise<Company> => {
+export const getCompany = async (companyId: string): Promise<Company> => {
   const company = await prisma.company.findFirst({
-    where: { id },
+    where: { id: companyId },
   });
   if (!company) {
     throw new NotFoundError('Company not found');
