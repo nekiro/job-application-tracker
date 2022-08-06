@@ -2,6 +2,8 @@ import { getMockReq, getMockRes } from '@jest-mock/express';
 import { getJob } from '../../../controllers/jobs.controller';
 import * as authentication from '../../../util/authentication';
 import * as jobService from '../../../services/job.service';
+import AuthError from '../../../errors/AuthError';
+import { Job } from '@prisma/client';
 
 describe('getJob controller', () => {
   test('should call getJob service and return its return value', async () => {
@@ -28,6 +30,17 @@ describe('getJob controller', () => {
     expect(getJobSpy).toHaveBeenCalledWith(mockedJobId);
 
     expect(res.json).toHaveBeenCalledWith(mockedJobData);
+  });
+
+  test('should call next with canAccessResource error', async () => {
+    jest.spyOn(authentication, 'canAccessResource').mockReturnValue(false);
+
+    const req = getMockReq();
+    const { res, next } = getMockRes();
+
+    await getJob(req, res, next);
+
+    expect(next).toHaveBeenCalledWith(new AuthError());
   });
 
   test('should call next with getJob service error', async () => {

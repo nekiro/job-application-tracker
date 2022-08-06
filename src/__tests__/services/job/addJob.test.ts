@@ -49,7 +49,7 @@ const addJobTest = async (mockedJobData: any) => {
     expect(prismaMock.company.create).toHaveBeenCalledWith({
       data: { ...mockedJobData.company, userId: mockedJobData.userId },
     });
-  } else {
+  } else if (typeof mockedJobData.company === 'string') {
     expect(prismaMock.company.findFirst).toHaveBeenCalledWith({
       where: { id: mockedJobData.company },
     });
@@ -83,7 +83,7 @@ describe('addJob service', () => {
       prismaMock.user.findUnique.mockResolvedValue(null);
 
       try {
-        await jobService.addJob('foo', 'bar', {});
+        await jobService.addJob('foo', 'bar', {} as any);
       } catch (err) {
         expect(err).toEqual(new NotFoundError('User not found'));
       }
