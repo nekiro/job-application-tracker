@@ -32,10 +32,7 @@ export const getJob = async (
   try {
     const userId = req.params.userId as string;
 
-    console.log(req.user, userId);
-
     if (!canAccessResource(req.user, userId)) {
-      console.log('exception');
       throw new AuthError();
     }
 
