@@ -10,6 +10,11 @@ export const deleteUser = async (id: string): Promise<void> => {
   }
 };
 
+export const createUser = async (data: User): Promise<User> => {
+  const user = await prisma.user.create({ data });
+  return user;
+};
+
 export const getUser = async (id: string): Promise<User | null> => {
   const user = await prisma.user.findUnique({ where: { id } });
   if (!user) {

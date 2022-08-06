@@ -2,7 +2,7 @@ import { Category } from '@prisma/client';
 import NotFoundError from '../errors/NotFoundError';
 import prisma from '../prisma';
 
-export const addCategory = async (userId: string, data: any) => {
+export const addCategory = async (userId: string, data: Category) => {
   const user = await prisma.user.findUnique({
     select: { id: true },
     where: { id: userId },

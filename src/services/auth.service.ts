@@ -6,6 +6,7 @@ import { userExcludedKeys } from '../schemas/auth';
 import { excludeKeys } from '../util';
 import { generateToken } from '../util/authentication';
 import { compareHash, encrypt, generateSalt } from '../util/crypt';
+import { createUser } from './user.service';
 
 export const signIn = async (email: string, password: string): Promise<any> => {
   const user = await prisma.user.findFirst({
@@ -30,7 +31,7 @@ export const signUp = async (userData: User): Promise<any> => {
   try {
     const { firstName, lastName, email, password, role } = userData;
 
-    const user = await prisma.user.create({
+    const user = await createUser({
       data: {
         firstName,
         lastName,
@@ -47,9 +48,9 @@ export const signUp = async (userData: User): Promise<any> => {
   }
 };
 
-export const signOut = async (id: string): Promise<void> => {
+export const signOut = async (userId: string): Promise<void> => {
   await prisma.user.update({
-    where: { id },
+    where: { id: userId },
     data: {
       tokenSecret: await generateSalt(6),
     },

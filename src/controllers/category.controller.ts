@@ -9,7 +9,7 @@ export const addCategory = async (
   next: NextFunction
 ) => {
   try {
-    if (!canAccessResource(req.user, req.body.userId)) {
+    if (!canAccessResource(req.user, req.params.userId)) {
       throw new AuthError();
     }
 
@@ -26,13 +26,13 @@ export const getCategory = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
+    const { userId } = req.params;
 
-    if (!canAccessResource(req.user, id)) {
+    if (!canAccessResource(req.user, userId)) {
       throw new AuthError();
     }
 
-    const category = await categoryService.getCategory(id);
+    const category = await categoryService.getCategory(userId);
     res.json(category);
   } catch (err) {
     next(err);
@@ -45,7 +45,7 @@ export const getCategories = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req.params.userId as string;
+    const { userId } = req.params;
 
     if (!canAccessResource(req.user, userId)) {
       throw new AuthError();
@@ -64,15 +64,13 @@ export const deleteCategory = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
-
-    const userId = req.query.userId as string;
+    const { userId, categoryId } = req.params;
 
     if (!canAccessResource(req.user, userId)) {
       throw new AuthError();
     }
 
-    await categoryService.deleteCategory(id);
+    await categoryService.deleteCategory(categoryId);
     res.sendStatus(204);
   } catch (err) {
     next(err);
