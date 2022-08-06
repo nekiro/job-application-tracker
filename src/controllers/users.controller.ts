@@ -27,13 +27,13 @@ export const getUser = async (
   next: NextFunction
 ) => {
   try {
-    const { id } = req.params;
+    const { userId } = req.params;
 
-    if (!canAccessResource(req.user, id)) {
+    if (!canAccessResource(req.user, userId)) {
       throw new AuthError();
     }
 
-    const user = await usersService.getUser(id);
+    const user = await usersService.getUser(userId);
     res.json(excludeKeys(user as any, userExcludedKeys));
   } catch (err) {
     next(err);

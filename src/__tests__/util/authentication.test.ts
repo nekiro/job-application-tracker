@@ -84,7 +84,7 @@ describe('canAccessResource', () => {
   });
 
   describe('given invalid user and valid requested id', () => {
-    test('should return true', async () => {
+    test('should return false', async () => {
       const requestedUserId = 'foo';
 
       for (const val of [null, undefined, {}]) {

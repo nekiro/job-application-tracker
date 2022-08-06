@@ -13,7 +13,7 @@ export const addCategory = async (
       throw new AuthError();
     }
 
-    const job = await categoryService.addCategory(req.body);
+    const job = await categoryService.addCategory(req.params.userId, req.body);
     res.status(201).json(job);
   } catch (err) {
     next(err);
@@ -45,7 +45,7 @@ export const getCategories = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req.query.userId as string;
+    const userId = req.params.userId as string;
 
     if (!canAccessResource(req.user, userId)) {
       throw new AuthError();

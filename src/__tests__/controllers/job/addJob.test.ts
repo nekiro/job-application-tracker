@@ -8,17 +8,14 @@ describe('addJob controller', () => {
   test('should call job service and return new job', async () => {
     const mockedJobData = {
       name: 'foo',
-      level: 'bar',
-      status: 'barbar',
       userId: 'foo',
     };
 
     const mockedCompanyId = 'bar';
+    const mockedCategoryId = 'foobarfoo';
 
     const mockedJob = {
       name: mockedJobData.name,
-      level: mockedJobData.level,
-      status: mockedJobData.status,
       companyId: mockedCompanyId,
       userId: mockedJobData.userId,
     };
@@ -34,6 +31,7 @@ describe('addJob controller', () => {
     const req = getMockReq({
       body: mockedJobData,
       user: { id: 'foo' },
+      params: { userId: mockedJobData.userId, categoryId: mockedCategoryId },
     });
     const { res, next } = getMockRes();
 
@@ -44,7 +42,11 @@ describe('addJob controller', () => {
       mockedJobData.userId
     );
 
-    expect(addJobSpy).toHaveBeenCalledWith(mockedJobData);
+    expect(addJobSpy).toHaveBeenCalledWith(
+      mockedJobData.userId,
+      mockedCategoryId,
+      mockedJobData
+    );
 
     expect(res.json).toHaveBeenCalledWith(mockedJob);
   });

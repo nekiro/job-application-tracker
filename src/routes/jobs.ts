@@ -4,7 +4,7 @@ import { authenticate } from '../middlewares/authentication';
 import { validateRequest } from '../middlewares/validation';
 import * as schemas from '../schemas/users';
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.post(
   '/',
@@ -15,6 +15,10 @@ router.post(
 
 router.get('/', authenticate({ sameUserOrAdmin: 'id' }), handler.getJobs);
 
-router.get('/:id', authenticate({ sameUserOrAdmin: 'userId' }), handler.getJob);
+router.get(
+  '/:jobId',
+  authenticate({ sameUserOrAdmin: 'userId' }),
+  handler.getJob
+);
 
 export default router;

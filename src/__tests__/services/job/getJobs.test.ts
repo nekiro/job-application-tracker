@@ -13,14 +13,14 @@ describe('getJobs service', () => {
         },
       ];
 
-      const mockedUserId = 'foo';
+      const mockedCategoryId = 'foo';
 
       prismaMock.job.findMany.mockResolvedValue(mockedJobs as any);
 
-      const jobs = await jobService.getJobs(mockedUserId);
+      const jobs = await jobService.getJobs(mockedCategoryId);
 
       expect(prismaMock.job.findMany).toHaveBeenCalledWith({
-        where: { userId: mockedUserId },
+        where: { categoryId: mockedCategoryId },
       });
 
       expect(jobs).toEqual(mockedJobs);

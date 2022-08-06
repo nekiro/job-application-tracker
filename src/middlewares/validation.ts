@@ -5,7 +5,6 @@ import ValidationError from '../errors/ValidationError';
 const options = {
   abortEarly: false,
   allowUnknown: true,
-  stripUnknown: true,
 };
 
 export const validateRequest =

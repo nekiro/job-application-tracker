@@ -2,17 +2,21 @@ import { Category } from '@prisma/client';
 import NotFoundError from '../errors/NotFoundError';
 import prisma from '../prisma';
 
-export const addCategory = async (data: any) => {
+export const addCategory = async (userId: string, data: any) => {
   const user = await prisma.user.findUnique({
     select: { id: true },
-    where: { id: data.userId },
+    where: { id: userId },
   });
   if (!user) {
     throw new NotFoundError('User not found');
   }
 
   const category = await prisma.category.create({
-    data,
+    data: {
+      ...data,
+      userId,
+    },
+    include: { jobs: true },
   });
   return category;
 };
@@ -20,7 +24,9 @@ export const addCategory = async (data: any) => {
 export const getCategory = async (id: string): Promise<Category> => {
   const category = await prisma.category.findFirst({
     where: { id },
+    include: { jobs: true },
   });
+
   if (!category) {
     throw new NotFoundError('Category not found');
   }
@@ -32,6 +38,7 @@ export const getCategories = async (userId: string): Promise<Category[]> => {
     where: {
       userId,
     },
+    include: { jobs: true },
   });
   return categories;
 };

@@ -17,6 +17,7 @@ const addJobTest = async (mockedJobData: any) => {
     status: mockedJobData.status,
     companyId: mockedCompanyId,
     userId: mockedJobData.userId,
+    categoryId: mockedJobData.categoryId,
   };
 
   prismaMock.user.findUnique.mockResolvedValue({ id: 'foo' } as any);
@@ -33,7 +34,11 @@ const addJobTest = async (mockedJobData: any) => {
 
   prismaMock.job.create.mockResolvedValue(mockedJob as any);
 
-  const job = await jobService.addJob(mockedJobData);
+  const job = await jobService.addJob(
+    mockedJobData.userId,
+    mockedJobData.categoryId,
+    mockedJobData
+  );
 
   expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
     select: { id: true },
@@ -62,8 +67,6 @@ describe('addJob service', () => {
     test('should create new company or reference it and new job and return it', async () => {
       const mockedJobData = {
         name: 'foo',
-        level: 'bar',
-        status: 'barbar',
         userId: 'foo',
       };
 
@@ -80,7 +83,7 @@ describe('addJob service', () => {
       prismaMock.user.findUnique.mockResolvedValue(null);
 
       try {
-        await jobService.addJob({});
+        await jobService.addJob('foo', 'bar', {});
       } catch (err) {
         expect(err).toEqual(new NotFoundError('User not found'));
       }
@@ -91,9 +94,8 @@ describe('addJob service', () => {
     test('should throw NotFoundError', async () => {
       const mockedJobData = {
         name: 'foo',
-        level: 'bar',
-        status: 'barbar',
         userId: 'foo',
+        categoryId: 'bar',
       };
 
       const mockedCompanyId = 'foo';
@@ -102,7 +104,14 @@ describe('addJob service', () => {
       prismaMock.company.findFirst.mockResolvedValue(null);
 
       try {
-        await jobService.addJob({ ...mockedJobData, company: mockedCompanyId });
+        await jobService.addJob(
+          mockedJobData.userId,
+          mockedJobData.categoryId,
+          {
+            ...mockedJobData,
+            company: mockedCompanyId,
+          }
+        );
       } catch (err) {
         expect(err).toEqual(new NotFoundError('Company not found'));
       }

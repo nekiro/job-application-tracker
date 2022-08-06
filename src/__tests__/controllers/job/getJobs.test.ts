@@ -15,7 +15,8 @@ describe('getJobs controller', () => {
       },
     ];
 
-    const mockedUserId = 'foo';
+    const mockedUserId = 'bar';
+    const mockedCategoryId = 'foobar';
 
     const canAccessResourceSpy = jest
       .spyOn(authentication, 'canAccessResource')
@@ -26,7 +27,7 @@ describe('getJobs controller', () => {
       .mockResolvedValue(mockedJobs as any);
 
     const req = getMockReq({
-      query: { userId: mockedUserId },
+      params: { userId: mockedUserId, categoryId: mockedCategoryId },
       user: { id: 'foo' },
     });
     const { res, next } = getMockRes();
@@ -34,7 +35,7 @@ describe('getJobs controller', () => {
     await getJobs(req, res, next);
 
     expect(canAccessResourceSpy).toBeCalledWith({ id: 'foo' }, mockedUserId);
-    expect(getJobsSpy).toHaveBeenCalledWith(mockedUserId);
+    expect(getJobsSpy).toHaveBeenCalledWith(mockedCategoryId);
     expect(res.json).toHaveBeenCalledWith(mockedJobs);
   });
 

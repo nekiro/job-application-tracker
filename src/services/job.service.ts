@@ -2,8 +2,12 @@ import { Job } from '@prisma/client';
 import NotFoundError from '../errors/NotFoundError';
 import prisma from '../prisma';
 
-export const addJob = async (jobData: any): Promise<any> => {
-  const { name, level, status, company, userId } = jobData;
+export const addJob = async (
+  userId: string,
+  categoryId: string,
+  jobData: any
+): Promise<any> => {
+  const { name, company } = jobData;
 
   // check if user id exists
   const user = await prisma.user.findUnique({
@@ -39,18 +43,17 @@ export const addJob = async (jobData: any): Promise<any> => {
   const jobOffer = await prisma.job.create({
     data: {
       name,
-      level,
-      status,
       companyId: companyObj?.id as string,
       userId: user.id,
+      categoryId,
     },
   });
 
   return jobOffer;
 };
 
-export const getJob = async (id: string): Promise<Job> => {
-  const job = await prisma.job.findUnique({ where: { id } });
+export const getJob = async (jobId: string): Promise<Job> => {
+  const job = await prisma.job.findUnique({ where: { id: jobId } });
   if (!job) {
     throw new NotFoundError('Job not found');
   }
@@ -58,8 +61,8 @@ export const getJob = async (id: string): Promise<Job> => {
   return job;
 };
 
-export const getJobs = async (userId: string): Promise<Job[]> => {
+export const getJobs = async (categoryId: string): Promise<Job[]> => {
   // TODO: pagination?
-  const jobs = await prisma.job.findMany({ where: { userId } });
+  const jobs = await prisma.job.findMany({ where: { categoryId } });
   return jobs;
 };

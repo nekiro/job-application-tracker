@@ -9,11 +9,15 @@ export const addJob = async (
   next: NextFunction
 ) => {
   try {
-    if (!canAccessResource(req.user, req.body.userId)) {
+    if (!canAccessResource(req.user, req.params.userId)) {
       throw new AuthError();
     }
 
-    const job = await jobService.addJob(req.body);
+    const job = await jobService.addJob(
+      req.params.userId,
+      req.params.categoryId,
+      req.body
+    );
     res.status(201).json(job);
   } catch (err) {
     next(err);
@@ -26,11 +30,16 @@ export const getJob = async (
   next: NextFunction
 ) => {
   try {
-    // TODO: getJob should only allow getting data for token user
-    // so there is potentially one extra query here, because we have to pull job
-    // to get "owner" of it
+    const userId = req.params.userId as string;
 
-    const job = await jobService.getJob(req.params.id);
+    console.log(req.user, userId);
+
+    if (!canAccessResource(req.user, userId)) {
+      console.log('exception');
+      throw new AuthError();
+    }
+
+    const job = await jobService.getJob(req.params.jobId);
     res.json(job);
   } catch (err) {
     next(err);
@@ -43,13 +52,13 @@ export const getJobs = async (
   next: NextFunction
 ) => {
   try {
-    const userId = req.query.userId as string;
+    const userId = req.params.userId as string;
 
     if (!canAccessResource(req.user, userId)) {
       throw new AuthError();
     }
 
-    const jobs = await jobService.getJobs(userId);
+    const jobs = await jobService.getJobs(req.params.categoryId);
     res.json(jobs);
   } catch (err) {
     next(err);

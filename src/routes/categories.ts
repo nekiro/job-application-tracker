@@ -3,8 +3,9 @@ import * as handler from '../controllers/category.controller';
 import { authenticate } from '../middlewares/authentication';
 import { validateRequest } from '../middlewares/validation';
 import * as schemas from '../schemas/categories';
+import jobsRouter from './jobs';
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.post(
   '/',
@@ -14,7 +15,7 @@ router.post(
 );
 
 router.delete(
-  '/:id',
+  '/:categoryId',
   authenticate({ sameUserOrAdmin: 'id' }),
   handler.deleteCategory
 );
@@ -22,9 +23,12 @@ router.delete(
 router.get('/', authenticate({ sameUserOrAdmin: 'id' }), handler.getCategories);
 
 router.get(
-  '/:id',
+  '/:categoryId',
   authenticate({ sameUserOrAdmin: 'id' }),
   handler.getCategory
 );
+
+// jobs
+router.use('/:categoryId/jobs', jobsRouter);
 
 export default router;

@@ -35,7 +35,7 @@ export const authenticate =
   (options = {}) =>
   async (req: Request, _res: Response, next: NextFunction) => {
     try {
-      if (process.env.SKIP_AUTH) {
+      if (process.env.SKIP_AUTH === 'true') {
         const user = await prisma.user.findFirst();
         if (!user) {
           throw new JsonWebTokenError('Malformed token data');

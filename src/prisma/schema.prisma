@@ -24,8 +24,6 @@ model Company {
 model Job {
     id         String    @id @default(uuid())
     name       String
-    status     Int
-    level      Int
     appliedAt  DateTime  @default(now())
     company    Company   @relation(fields: [companyId], references: [id])
     companyId  String
