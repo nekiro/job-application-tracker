@@ -1,5 +1,5 @@
 class ValidationError extends Error {
-  what: any;
+  what: any[];
 
   constructor(what: any) {
     super('');

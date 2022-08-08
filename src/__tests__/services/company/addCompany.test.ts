@@ -1,6 +1,7 @@
 import { prismaMock } from '../../../singleton';
 import * as companyService from '../../../services/company.service';
 import NotFoundError from '../../../errors/NotFoundError';
+import CompanyDTO from '../../../types/CompanyDTO';
 
 describe('addCompany service', () => {
   describe('given valid payload', () => {
@@ -41,7 +42,7 @@ describe('addCompany service', () => {
       prismaMock.user.findUnique.mockResolvedValue(null);
 
       try {
-        await companyService.addCompany({});
+        await companyService.addCompany({} as CompanyDTO);
       } catch (err) {
         expect(err).toEqual(new NotFoundError('User not found'));
       }

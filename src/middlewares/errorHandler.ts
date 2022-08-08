@@ -10,9 +10,10 @@ import AuthError from '../errors/AuthError';
 import InvalidRoleError from '../errors/InvalidRoleError';
 import NotFoundError from '../errors/NotFoundError';
 import ResourceExistsError from '../errors/ResourceExistsError';
+import APIError from '../types/APIError';
 
 const errorHandler = (
-  err: any,
+  err: Error,
   _req: Request,
   res: Response,
   next: NextFunction
@@ -21,31 +22,40 @@ const errorHandler = (
     return next(err);
   }
 
-  const error: any = {
+  const error: APIError = {
     errorType: err.name,
     error: 'Internal Server Error',
   };
 
-  let errorCode = 500;
+  let errorCode: number = 500;
 
   switch (err.constructor) {
     case ValidationError:
-      error.error = {};
+      if (err instanceof ValidationError) {
+        error.error = {};
 
-      err.what.forEach((e: any) => {
-        error.error[e.context.key] = e.message.split('"').join('');
-      });
+        err.what.forEach((e: any) => {
+          //@ts-ignore
+          error.error[e.context.key] = e.message.split('"').join('');
+        });
+      }
 
       errorCode = 400;
+
       break;
 
     case TokenExpiredError:
-      error.error = `Token expired at ${err.expiredAt}`;
+      if (err instanceof TokenExpiredError) {
+        error.error = `Token expired at ${err.expiredAt}`;
+      }
       errorCode = 401;
+
       break;
 
     case NotBeforeError:
-      error.error = `Token activates at ${err.date}`;
+      if (err instanceof NotBeforeError) {
+        error.error = `Token activates at ${err.date}`;
+      }
       errorCode = 401;
       break;
 
@@ -67,10 +77,12 @@ const errorHandler = (
       break;
 
     case PrismaClientKnownRequestError:
-      switch (err.code) {
-        default:
-          error.error = err.message;
-          break;
+      if (err instanceof PrismaClientKnownRequestError) {
+        switch (err.code) {
+          default:
+            error.error = err.message;
+            break;
+        }
       }
       break;
 

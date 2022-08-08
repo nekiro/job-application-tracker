@@ -3,6 +3,7 @@ import { addJob } from '../../../controllers/jobs.controller';
 import * as authentication from '../../../util/authentication';
 import AuthError from '../../../errors/AuthError';
 import * as jobService from '../../../services/job.service';
+import { Job } from '@prisma/client';
 
 describe('addJob controller', () => {
   test('should call job service and return new job', async () => {
@@ -26,7 +27,7 @@ describe('addJob controller', () => {
 
     const addJobSpy = jest
       .spyOn(jobService, 'addJob')
-      .mockResolvedValue(mockedJob);
+      .mockResolvedValue(mockedJob as Job);
 
     const req = getMockReq({
       body: mockedJobData,
