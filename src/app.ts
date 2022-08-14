@@ -55,6 +55,10 @@ app.get('/', (_req: Request, res: Response) => {
   res.send(homeHtml);
 });
 
+app.get('/health', (_req: Request, res: Response) => {
+  res.sendStatus(200);
+});
+
 // error handler
 app.use(errorHandler);
 
