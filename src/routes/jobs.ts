@@ -9,11 +9,17 @@ const router = express.Router({ mergeParams: true });
 router.post(
   '/',
   validateRequest(schemas.addJob),
-  authenticate({ sameUserOrAdmin: 'id' }),
+  authenticate({ sameUserOrAdmin: 'userId' }),
   handler.addJob
 );
 
-router.get('/', authenticate({ sameUserOrAdmin: 'id' }), handler.getJobs);
+router.delete(
+  '/:jobId',
+  authenticate({ sameUserOrAdmin: 'userId' }),
+  handler.deleteJob
+);
+
+router.get('/', authenticate({ sameUserOrAdmin: 'userId' }), handler.getJobs);
 
 router.get(
   '/:jobId',

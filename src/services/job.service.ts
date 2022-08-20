@@ -53,6 +53,11 @@ export const addJob = async (
   return jobOffer;
 };
 
+export const deleteJob = async (jobId: string): Promise<Job> => {
+  const job = await prisma.job.delete({ where: { id: jobId } });
+  return job;
+};
+
 export const getJob = async (jobId: string): Promise<Job> => {
   const job = await prisma.job.findUnique({ where: { id: jobId } });
   if (!job) {

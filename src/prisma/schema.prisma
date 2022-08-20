@@ -24,14 +24,17 @@ model Company {
 model Job {
     id         String    @id @default(uuid())
     name       String
+    index      Int
+    url        String
     appliedAt  DateTime  @default(now())
     company    Company   @relation(fields: [companyId], references: [id])
     companyId  String
-    user       User      @relation(fields: [userId], references: [id])
+    user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId     String
-    Category   Category? @relation(fields: [categoryId], references: [id])
+    Category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
     categoryId String?
 
+    @@unique([id, index])
     @@map("jobs")
 }
 
@@ -54,9 +57,10 @@ model Category {
     id     String @id @default(uuid())
     name   String
     index  Int
-    user   User   @relation(fields: [userId], references: [id])
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
     userId String
     jobs   Job[]
 
+    @@unique([id, index])
     @@map("categories")
 }

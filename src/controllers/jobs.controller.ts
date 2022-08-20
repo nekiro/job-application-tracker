@@ -24,15 +24,30 @@ export const addJob = async (
   }
 };
 
+export const deleteJob = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (!canAccessResource(req.user, req.params.userId)) {
+      throw new AuthError();
+    }
+
+    const job = await jobService.deleteJob(req.params.jobId);
+    res.status(200).json(job);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const getJob = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const userId = req.params.userId as string;
-
-    if (!canAccessResource(req.user, userId)) {
+    if (!canAccessResource(req.user, req.params.userId)) {
       throw new AuthError();
     }
 
