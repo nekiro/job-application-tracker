@@ -12,3 +12,5 @@ export const excludeKeys = (fields: Record<string, any>, omit: string[]) => {
 export const formatSuccess = (message: string) => {
   return { message };
 };
+
+export const dev = process.env.NODE_ENV !== 'production';

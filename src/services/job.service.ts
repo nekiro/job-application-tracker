@@ -8,7 +8,7 @@ export const addJob = async (
   categoryId: string,
   jobData: JobDTO
 ): Promise<Job> => {
-  const { name, company } = jobData;
+  const { name, company, index, url } = jobData;
 
   // check if user id exists
   const user = await prisma.user.findUnique({
@@ -44,6 +44,8 @@ export const addJob = async (
   const jobOffer = await prisma.job.create({
     data: {
       name,
+      index,
+      url,
       companyId: companyObj?.id as string,
       userId: user.id,
       categoryId,

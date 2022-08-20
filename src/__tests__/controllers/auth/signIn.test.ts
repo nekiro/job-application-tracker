@@ -1,5 +1,6 @@
 import { getMockReq, getMockRes } from '@jest-mock/express';
 import { signIn } from '../../../controllers/auth.controller';
+import AuthError from '../../../errors/AuthError';
 import * as authService from '../../../services/auth.service';
 
 describe('Sign-in sontroller', () => {
@@ -10,9 +11,8 @@ describe('Sign-in sontroller', () => {
     };
 
     const signInSpy = jest.spyOn(authService, 'signIn').mockResolvedValue({
-      user: mockedUser,
-      token: 'foobar',
-      expiresAt: Date.now(),
+      refreshToken: { value: 'foo', expiresAt: 0 },
+      accessToken: { value: 'foo', expiresAt: 0 },
     });
 
     const req = getMockReq({
@@ -26,10 +26,19 @@ describe('Sign-in sontroller', () => {
     expect(res.json).toHaveBeenCalledWith(
       expect.objectContaining({
         token: expect.any(String),
-        expiresAt: expect.any(Number),
-        user: expect.objectContaining(mockedUser),
       })
     );
+  });
+
+  test('should call next with AuthError when returned token is invalid', async () => {
+    jest.spyOn(authService, 'signIn').mockResolvedValue(null);
+
+    const req = getMockReq();
+    const { res, next } = getMockRes();
+
+    await signIn(req, res, next);
+
+    expect(next).toHaveBeenCalledWith(new AuthError());
   });
 
   test('should call next with signIn service error', async () => {

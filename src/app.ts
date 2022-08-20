@@ -5,6 +5,7 @@ import errorHandler from './middlewares/errorHandler';
 import 'dotenv/config';
 import NotFoundError from './errors/NotFoundError';
 import { User as PrismaUser } from '@prisma/client';
+import cookieParser from 'cookie-parser';
 
 // routes
 import companiesRouter from './routes/companies';
@@ -25,6 +26,7 @@ app.use(cors());
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
 
 // we don't need to tell our framework
 app.disable('x-powered-by');

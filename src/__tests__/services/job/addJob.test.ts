@@ -110,7 +110,7 @@ describe('addJob service', () => {
           {
             ...mockedJobData,
             company: mockedCompanyId,
-          }
+          } as any
         );
       } catch (err) {
         expect(err).toEqual(new NotFoundError('Company not found'));

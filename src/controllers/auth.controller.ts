@@ -1,7 +1,9 @@
-import { excludeKeys, formatSuccess } from '../util';
+import { dev, excludeKeys, formatSuccess } from '../util';
 import { userExcludedKeys } from '../schemas/auth';
 import { NextFunction, Request, Response } from 'express';
 import * as authService from '../services/auth.service';
+import AuthError from '../errors/AuthError';
+import { refreshToken as authRefreshToken } from '../util/authentication';
 
 export const signIn = async (
   req: Request,
@@ -11,9 +13,19 @@ export const signIn = async (
   try {
     const { email, password } = req.body;
 
-    const userData = await authService.signIn(email, password);
+    const tokenData = await authService.signIn(email, password);
+    if (!tokenData) {
+      throw new AuthError();
+    }
 
-    res.json(userData);
+    res.cookie('jwt', tokenData.refreshToken.value, {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: !dev,
+      maxAge: Number(process.env.REFRESH_TOKEN_LIFETIME) * 1000,
+    });
+
+    res.json({ token: tokenData.accessToken.value });
   } catch (err) {
     next(err);
   }
@@ -44,6 +56,23 @@ export const signOut = async (
     await authService.signOut(user.id);
 
     res.status(204).json(formatSuccess('Logged out succesfully'));
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const refreshToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (!req.cookies?.jwt) {
+      throw new AuthError();
+    }
+
+    const token = await authRefreshToken(req.cookies.jwt);
+    res.status(200).json({ token: token.value });
   } catch (err) {
     next(err);
   }

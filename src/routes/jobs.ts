@@ -1,14 +1,31 @@
 import express from 'express';
+import Joi from 'joi';
 import * as handler from '../controllers/jobs.controller';
 import { authenticate } from '../middlewares/authentication';
 import { validateRequest } from '../middlewares/validation';
-import * as schemas from '../schemas/users';
+
+const addJob: Joi.ObjectSchema = Joi.object({
+  body: Joi.object({
+    name: Joi.string().required(),
+    url: Joi.string().uri(),
+    index: Joi.number().required(),
+    appliedAt: Joi.date().default(Date.now),
+    company: Joi.alternatives(
+      Joi.string(),
+      Joi.object({
+        name: Joi.string().required(),
+        website: Joi.string().allow('').default(''),
+        size: Joi.number().default(0),
+      })
+    ).required(),
+  }),
+});
 
 const router = express.Router({ mergeParams: true });
 
 router.post(
   '/',
-  validateRequest(schemas.addJob),
+  validateRequest(addJob),
   authenticate({ sameUserOrAdmin: 'userId' }),
   handler.addJob
 );

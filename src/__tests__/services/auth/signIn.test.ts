@@ -3,6 +3,7 @@ import AuthError from '../../../errors/AuthError';
 import * as crypt from '../../../util/crypt';
 import * as authService from '../../../services/auth.service';
 import * as authentication from '../../../util/authentication';
+import { Token } from '../../../util/authentication';
 
 describe('Sign-in service', () => {
   describe('given valid payload', () => {
@@ -11,10 +12,13 @@ describe('Sign-in service', () => {
         id: 'foo',
         email: 'foo@bar',
       };
+      const mockedAccessToken = { value: 'foo', expiresAt: 0 } as Token;
+      const mockedRefreshToken = { value: 'foo', expiresAt: 0 } as Token;
 
-      jest
-        .spyOn(authentication, 'generateToken')
-        .mockReturnValue({ token: 'foo', expiresAt: 1234567 });
+      jest.spyOn(authentication, 'generateTokenPair').mockResolvedValue({
+        accessToken: mockedAccessToken,
+        refreshToken: mockedRefreshToken,
+      });
 
       const compareHashSpy = jest
         .spyOn(crypt, 'compareHash')
@@ -26,19 +30,19 @@ describe('Sign-in service', () => {
         password: 'bar',
       });
 
-      const returnedUser = await authService.signIn(mockedUser.email, 'foo');
+      const returnedTokenData = await authService.signIn(
+        mockedUser.email,
+        'foo'
+      );
 
       expect(prismaMock.user.findFirst).toHaveBeenCalledWith({
         where: { email: mockedUser.email },
       });
       expect(compareHashSpy).toHaveBeenCalledWith('foo', 'bar');
-      expect(returnedUser).toStrictEqual(
-        expect.objectContaining({
-          token: expect.any(String),
-          expiresAt: expect.any(Number),
-          user: expect.objectContaining(mockedUser),
-        })
-      );
+      expect(returnedTokenData).toEqual({
+        accessToken: expect.objectContaining(mockedAccessToken),
+        refreshToken: expect.objectContaining(mockedRefreshToken),
+      });
     });
   });
 

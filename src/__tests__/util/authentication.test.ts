@@ -1,8 +1,12 @@
-import { generateToken, canAccessResource } from '../../util/authentication';
+import {
+  generateTokenPair,
+  canAccessResource,
+  TokenData,
+} from '../../util/authentication';
 import { User } from '@prisma/client';
 import Role from '../../models/role';
 
-describe('generateToken', () => {
+describe('generateTokenPair', () => {
   describe('given user with valid properties', () => {
     test('should return object with token and expiresAt properties', async () => {
       const mockedUser: User = {
@@ -15,17 +19,27 @@ describe('generateToken', () => {
         role: Role.USER,
       };
 
-      const data = generateToken(mockedUser) as any;
+      const data = (await generateTokenPair(mockedUser)) as TokenData;
 
-      expect(data.expiresAt).toEqual(expect.any(Number));
-      expect(data.token).toEqual(expect.any(String));
+      expect(data).toEqual(
+        expect.objectContaining({
+          accessToken: {
+            value: expect.any(String),
+            expiresAt: expect.any(Number),
+          },
+          refreshToken: {
+            value: expect.any(String),
+            expiresAt: expect.any(Number),
+          },
+        })
+      );
     });
   });
 
   describe('given invalid user', () => {
     test('should return null', async () => {
       for (const val of [null, undefined, {}]) {
-        expect(generateToken(val as User)).toBe(null);
+        expect(await generateTokenPair(val as User)).toBe(null);
       }
     });
   });

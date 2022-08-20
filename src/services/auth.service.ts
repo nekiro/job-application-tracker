@@ -2,14 +2,20 @@ import { User } from '@prisma/client';
 import AuthError from '../errors/AuthError';
 import ResourceExistsError from '../errors/ResourceExistsError';
 import prisma from '../prisma';
-import { userExcludedKeys } from '../schemas/auth';
 import UserDTO from '../types/UserDTO';
-import { excludeKeys } from '../util';
-import { generateToken } from '../util/authentication';
+import {
+  generateTokenPair,
+  Token,
+  TokenData,
+  refreshToken as authRefreshToken,
+} from '../util/authentication';
 import { compareHash, encrypt, generateSalt } from '../util/crypt';
 import { createUser } from './user.service';
 
-export const signIn = async (email: string, password: string): Promise<any> => {
+export const signIn = async (
+  email: string,
+  password: string
+): Promise<TokenData | null> => {
   const user = await prisma.user.findFirst({
     where: { email },
   });
@@ -22,10 +28,7 @@ export const signIn = async (email: string, password: string): Promise<any> => {
     throw new AuthError("Email or password doesn't match");
   }
 
-  return {
-    user: excludeKeys(user, userExcludedKeys),
-    ...generateToken(user),
-  };
+  return await generateTokenPair(user);
 };
 
 export const signUp = async (userData: UserDTO): Promise<User> => {
