@@ -49,12 +49,3 @@ export const signUp = async (userData: UserDTO): Promise<User> => {
     throw new ResourceExistsError('Email already used');
   }
 };
-
-export const signOut = async (userId: string): Promise<void> => {
-  await prisma.user.update({
-    where: { id: userId },
-    data: {
-      tokenSecret: await generateSalt(6),
-    },
-  });
-};

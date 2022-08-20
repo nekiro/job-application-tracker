@@ -45,22 +45,6 @@ export const signUp = async (
   }
 };
 
-export const signOut = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const { user } = req;
-
-    await authService.signOut(user.id);
-
-    res.status(204).json(formatSuccess('Logged out succesfully'));
-  } catch (err) {
-    next(err);
-  }
-};
-
 export const refreshToken = async (
   req: Request,
   res: Response,
