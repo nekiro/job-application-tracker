@@ -28,7 +28,11 @@ describe('errorHandler', () => {
   describe('ValidationError', () => {
     test('should concatenate validation errors and 400 status', async () => {
       const mockedError = new ValidationError([
-        { context: { key: 'name' }, message: 'invalid name' } as any,
+        {
+          context: { label: 'body.name', key: 'name' },
+          message: 'invalid name',
+          path: ['body', 'name'],
+        } as any,
       ]);
       const req = getMockReq();
       const { res, next } = getMockRes();
@@ -37,7 +41,7 @@ describe('errorHandler', () => {
 
       expect(res.status).toHaveBeenCalledWith(400);
       expect(res.json).toHaveBeenCalledWith({
-        error: { name: 'invalid name' },
+        error: [{ name: 'invalid name' }],
         errorType: mockedError.name,
       });
     });
