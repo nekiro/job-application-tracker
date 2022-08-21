@@ -27,29 +27,23 @@ const errorHandler = (
     error: 'Internal Server Error',
   };
 
-  let errorCode: number = 500;
+  let errorCode = 500;
 
   switch (err.constructor) {
     case ValidationError:
       if (err instanceof ValidationError) {
-        error.error = {};
-
-        err.what.forEach((e: any) => {
-          //@ts-ignore
-          error.error[e.context.key] = e.message.split('"').join('');
-        });
+        error.error = err.getErrorMessage();
       }
 
       errorCode = 400;
-
       break;
 
     case TokenExpiredError:
       if (err instanceof TokenExpiredError) {
         error.error = `Token expired at ${err.expiredAt}`;
       }
-      errorCode = 401;
 
+      errorCode = 401;
       break;
 
     case NotBeforeError:

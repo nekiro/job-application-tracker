@@ -27,9 +27,9 @@ describe('errorHandler', () => {
 
   describe('ValidationError', () => {
     test('should concatenate validation errors and 400 status', async () => {
-      const mockedError = new ValidationError({
-        details: [{ context: { key: 'name' }, message: 'invalid name' }],
-      });
+      const mockedError = new ValidationError([
+        { context: { key: 'name' }, message: 'invalid name' } as any,
+      ]);
       const req = getMockReq();
       const { res, next } = getMockRes();
 

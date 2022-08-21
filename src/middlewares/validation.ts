@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
+import Joi from 'joi';
 
 import ValidationError from '../errors/ValidationError';
 
@@ -8,7 +9,8 @@ const options = {
 };
 
 export const validateRequest =
-  (schema: any) => async (req: Request, _res: Response, next: NextFunction) => {
+  (schema: Joi.ObjectSchema) =>
+  async (req: Request, _res: Response, next: NextFunction) => {
     if (!schema) {
       return next();
     }
@@ -19,7 +21,7 @@ export const validateRequest =
     );
 
     if (error) {
-      next(new ValidationError(error));
+      next(new ValidationError(error.details));
     } else {
       req.body = value.body;
       req.params = value.params ?? {};
