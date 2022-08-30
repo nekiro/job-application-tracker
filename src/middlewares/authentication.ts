@@ -58,11 +58,12 @@ export const authenticate =
       const user = await prisma.user.findFirst({
         where: { id: decodedPayload.data.id },
       });
+
       if (!user) {
         throw new JsonWebTokenError('Malformed token data');
       }
 
-      Jwt.verify(token, process.env.TOKEN_SECRET + user.tokenSecret);
+      Jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string);
 
       req.user = user;
 
