@@ -6,7 +6,6 @@ This repository implements API for [job-application-tracker](https://github.com/
 Mentioned project is front end app written in React.
 
 API is being implemented following monolithic architecture.
-Hosted using express at: https://api.jobtracker.pl
 CI/CD via Github Actions.
 
 Documentation:
